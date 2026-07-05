@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, MapPin, Clock, Award, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import { profileData } from '../data/profile';
+import { fetchEvents } from '../utils/api';
 
 // Sub-component for individual event card to manage its own image slide state
 const EventCard = ({ ev }) => {
@@ -165,8 +166,16 @@ const EventCard = ({ ev }) => {
 };
 
 const Events = () => {
-  const { events } = profileData;
+  const [events, setEvents] = useState(profileData.events);
   const [activeFilter, setActiveFilter] = useState('All');
+
+  useEffect(() => {
+    const loadEvents = async () => {
+      const cmsEvents = await fetchEvents();
+      setEvents(cmsEvents);
+    };
+    loadEvents();
+  }, []);
 
   const categories = ['All', 'Seminar', 'Expo', 'Competition', 'Academic', 'Activity'];
 

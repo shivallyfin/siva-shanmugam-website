@@ -2,9 +2,12 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, ArrowRight, ArrowUpRight, GraduationCap, ChevronLeft, ChevronRight, Clock, MapPin, Calendar } from 'lucide-react';
 import { profileData } from '../data/profile';
+import { fetchBlogs, fetchEvents } from '../utils/api';
 
 const Home = () => {
-  const { personalInfo, aboutMe, blogPosts, events, publications } = profileData;
+  const { personalInfo, aboutMe, publications } = profileData;
+  const [blogPosts, setBlogPosts] = useState(profileData.blogPosts);
+  const [events, setEvents] = useState(profileData.events);
   const scrollContainerRef = useRef(null);
   const eventsScrollContainerRef = useRef(null);
   const [activeDot, setActiveDot] = useState(0);
@@ -17,6 +20,16 @@ const Home = () => {
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    const loadCMSData = async () => {
+      const cmsBlogs = await fetchBlogs();
+      setBlogPosts(cmsBlogs);
+      const cmsEvents = await fetchEvents();
+      setEvents(cmsEvents);
+    };
+    loadCMSData();
   }, []);
 
   // Get latest blog posts (first 2)

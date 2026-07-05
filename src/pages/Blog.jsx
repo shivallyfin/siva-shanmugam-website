@@ -1,12 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Calendar, Clock, ArrowRight, Tag } from 'lucide-react';
 import { profileData } from '../data/profile';
+import { fetchBlogs } from '../utils/api';
 
 const Blog = () => {
-  const { blogPosts } = profileData;
+  const [blogPosts, setBlogPosts] = useState(profileData.blogPosts);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTag, setSelectedTag] = useState(null);
+
+  useEffect(() => {
+    const loadBlogs = async () => {
+      const cmsBlogs = await fetchBlogs();
+      setBlogPosts(cmsBlogs);
+    };
+    loadBlogs();
+  }, []);
 
   // Extract all unique tags
   const allTags = Array.from(
