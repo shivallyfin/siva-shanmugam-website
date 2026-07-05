@@ -404,14 +404,21 @@ Working capital is the oil that keeps the corporate engine running. In a post-cr
   events: [
     {
       id: "ev-1",
-      title: "Master Class: Chart Your Career",
+      title: "Master Class: Career Opportunities in Capital Market",
       category: "Seminar",
       date: "June 25, 2026",
       time: "11:00 AM - 1:00 PM",
       venue: "B-Block Seminar Hall, Sapthagiri NPS University",
-      speaker: "Mr. Pranam S Karpur (VP & Sr. Partner, Genpact)",
-      image: "/assets/poster-1.jpg",
-      description: "Dean Dr. Siva Shanmugam hosted a career steering seminar for MBA students with Mr. Pranam Karpur discussing Career paths in Data, Tech, and AI."
+      speaker: "Mr. Sanjeev B (NISM)",
+      image: "/assets/ev-1-1.jpg",
+      images: [
+        "/assets/ev-1-1.jpg",
+        "/assets/ev-1-2.jpg",
+        "/assets/ev-1-3.jpg",
+        "/assets/ev-1-4.jpg",
+        "/assets/ev-1-5.jpg"
+      ],
+      description: "The School of Management Studies at Sapthagiri NPS University hosted a Master Class Series seminar on 'Career Opportunities in Capital Market' in partnership with NISM (National Institute of Securities Markets), featuring speaker Mr. Sanjeev B."
     },
     {
       id: "ev-2",

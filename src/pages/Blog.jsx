@@ -138,7 +138,7 @@ const Blog = () => {
                   {post.summary}
                 </p>
 
-                <div className="mt-2 pt-4 border-t border-slate-100 dark:border-slate-850 flex justify-between items-center">
+                <div className="border-t border-slate-100 dark:border-slate-850 flex justify-between items-center" style={{ paddingTop: '16px', marginTop: '16px' }}>
                   <Link
                     to={`/blog/${post.id}`}
                     className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent-color dark:text-accent-gold hover:underline group-hover:gap-2.5 transition-all"

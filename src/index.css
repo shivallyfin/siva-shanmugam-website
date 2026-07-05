@@ -1050,6 +1050,10 @@ li {
   color: var(--accent-gold) !important;
 }
 
+.bg-accent-gold {
+  background-color: var(--accent-gold) !important;
+}
+
 .text-accent-color {
   color: var(--accent-color) !important;
 }

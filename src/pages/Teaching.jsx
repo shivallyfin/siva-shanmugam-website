@@ -26,18 +26,21 @@ const Teaching = () => {
 
         {/* Section 1: Course list */}
         <div className="flex flex-col gap-8">
-          <div className="flex items-center gap-3">
-            <BookOpen className="text-accent-gold" size={28} />
-            <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-white">
-              Courses Taught
-            </h2>
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              <BookOpen className="text-accent-gold" size={28} />
+              <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-white">
+                Courses Taught
+              </h2>
+            </div>
+            <div className="h-[2px] w-20 bg-accent-gold rounded-full" />
           </div>
 
           <div className="flex flex-col gap-6">
             {teaching.courses.map((course) => (
               <div
                 key={course.code}
-                className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm overflow-hidden"
+                className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm overflow-hidden hover:shadow-md hover:border-accent-gold/30 dark:hover:border-accent-gold/30 transition-all duration-300"
               >
                 <button
                   onClick={() => toggleCourse(course.code)}
@@ -69,7 +72,7 @@ const Teaching = () => {
                 </button>
 
                 {expandedCourse[course.code] && (
-                  <div className="px-6 pb-6 pt-2 border-t border-slate-100 dark:border-slate-850 text-sm animate-fade-up">
+                  <div className="px-6 pb-6 pt-6 border-t border-slate-100 dark:border-slate-850 text-sm animate-fade-up">
                     <p className="text-slate-600 dark:text-slate-400 mb-5 leading-relaxed font-sans">
                       {course.description}
                     </p>
@@ -94,11 +97,14 @@ const Teaching = () => {
 
         {/* Section 2: Advising list */}
         <div className="flex flex-col gap-8">
-          <div className="flex items-center gap-3">
-            <Users className="text-accent-gold" size={28} />
-            <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-white">
-              Student Advising & Mentorship
-            </h2>
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              <Users className="text-accent-gold" size={28} />
+              <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-white">
+                Student Advising & Mentorship
+              </h2>
+            </div>
+            <div className="h-[2px] w-20 bg-accent-gold rounded-full" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -112,7 +118,7 @@ const Teaching = () => {
                 {teaching.students.active.map((student, index) => (
                   <div 
                     key={index}
-                    className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm flex gap-3.5"
+                    className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md hover:border-accent-gold/30 dark:hover:border-accent-gold/30 transition-all duration-300 flex gap-3.5"
                   >
                     <div className="p-2.5 bg-amber-50 dark:bg-amber-950/20 rounded-lg self-start shrink-0">
                       <GraduationCap className="text-accent-gold" size={20} />
@@ -143,7 +149,7 @@ const Teaching = () => {
                 {teaching.students.completed.map((student, index) => (
                   <div 
                     key={index}
-                    className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm flex gap-3.5"
+                    className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md hover:border-accent-gold/30 dark:hover:border-accent-gold/30 transition-all duration-300 flex gap-3.5"
                   >
                     <div className="p-2.5 bg-amber-50 dark:bg-amber-950/20 rounded-lg self-start shrink-0">
                       <GraduationCap className="text-accent-gold" size={20} />
