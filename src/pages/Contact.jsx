@@ -19,17 +19,54 @@ const Contact = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // Simulate API request
-    setTimeout(() => {
+    const accessKey = process.env.REACT_APP_WEB3FORMS_ACCESS_KEY;
+
+    if (!accessKey) {
+      // Simulate API request in local development if no key is provided
+      setTimeout(() => {
+        setLoading(false);
+        setSuccess(true);
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        setTimeout(() => setSuccess(false), 5000);
+      }, 1200);
+      return;
+    }
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          from_name: 'Siva Shanmugam Website Contact Form'
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setSuccess(true);
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        setTimeout(() => setSuccess(false), 5000);
+      } else {
+        alert(data.message || 'Submission failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Web3Forms Error:', error);
+      alert('An error occurred. Please try again later.');
+    } finally {
       setLoading(false);
-      setSuccess(true);
-      setFormData({ name: '', email: '', subject: '', message: '' });
-      setTimeout(() => setSuccess(false), 5000);
-    }, 1500);
+    }
   };
 
   return (
