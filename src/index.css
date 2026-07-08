@@ -1422,3 +1422,15 @@ li {
 .dark .dark\:hover\:bg-slate-800:hover {
   background-color: #1b2431 !important;
 }
+
+.card-border {
+  border: 1px solid rgba(15, 41, 74, 0.12) !important;
+}
+
+.dark .card-border {
+  border: 1px solid rgba(30, 41, 59, 0.8) !important;
+}
+
+.bg-accent-color {
+  background-color: var(--accent-color) !important;
+}

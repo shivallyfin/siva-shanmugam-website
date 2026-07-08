@@ -87,7 +87,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/events" className="hover:text-accent-gold transition-colors">
-                  Events & Gallery
+                  Corporate Connections
                 </Link>
               </li>
               <li>

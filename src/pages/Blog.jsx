@@ -113,7 +113,7 @@ const Blog = () => {
             filteredPosts.map((post) => (
               <article
                 key={post.id}
-                className="bg-white dark:bg-slate-900 p-8 rounded-xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md transition-all duration-300 relative group flex flex-col gap-4"
+                className="bg-white dark:bg-slate-900 p-8 rounded-xl card-border shadow-sm hover:shadow-md transition-all duration-300 relative group flex flex-col gap-4"
               >
                 <div className="absolute top-0 left-0 w-[4px] h-full bg-slate-100 dark:bg-slate-800 group-hover:bg-accent-gold transition-colors" />
 

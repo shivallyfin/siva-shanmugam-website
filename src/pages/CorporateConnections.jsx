@@ -19,7 +19,7 @@ const EventCard = ({ ev }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full animate-fade-up">
+    <div className="bg-white dark:bg-slate-900 rounded-2xl card-border overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full animate-fade-up">
       {/* Poster/Image Carousel Frame */}
       <div
         className="relative w-full bg-slate-950 dark:bg-slate-950 flex items-center justify-center overflow-hidden border-b border-slate-100 dark:border-slate-850 shrink-0 select-none"
@@ -165,7 +165,7 @@ const EventCard = ({ ev }) => {
   );
 };
 
-const Events = () => {
+const CorporateConnections = () => {
   const [events, setEvents] = useState(profileData.events);
   const [activeFilter, setActiveFilter] = useState('All');
 
@@ -193,7 +193,7 @@ const Events = () => {
             Campus Life & Activities
           </span>
           <h1 className="text-4xl font-serif font-bold text-slate-900 dark:text-white">
-            Events & Gallery
+            Corporate Connections
           </h1>
           <div className="h-[3px] w-24 bg-accent-gold rounded-full" />
         </div>
@@ -225,4 +225,4 @@ const Events = () => {
   );
 };
 
-export default Events;
+export default CorporateConnections;

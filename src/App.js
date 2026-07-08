@@ -6,7 +6,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Publications from './pages/Publications';
 import Teaching from './pages/Teaching';
-import Events from './pages/Events';
+import CorporateConnections from './pages/CorporateConnections';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Contact from './pages/Contact';
@@ -22,7 +22,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/publications" element={<Publications />} />
             <Route path="/teaching" element={<Teaching />} />
-            <Route path="/events" element={<Events />} />
+            <Route path="/events" element={<CorporateConnections />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:id" element={<BlogPost />} />
             <Route path="/contact" element={<Contact />} />

@@ -240,7 +240,7 @@ const Home = () => {
                 <Link
                   key={i}
                   to="/publications"
-                  className="shrink-0 bg-white dark:bg-slate-850 p-6 md:p-8 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 shadow-md hover:shadow-xl hover:-translate-y-1.5 hover:border-accent-gold/40 dark:hover:border-accent-gold/40 transition-all duration-300 flex flex-col gap-4 relative overflow-hidden group"
+                  className="shrink-0 bg-white dark:bg-slate-850 p-6 md:p-8 rounded-2xl card-border shadow-md hover:shadow-xl hover:-translate-y-1.5 hover:border-accent-gold/40 dark:hover:border-accent-gold/40 transition-all duration-300 flex flex-col gap-4 relative overflow-hidden group"
                   style={{ width: '360px', maxWidth: '100%', height: '230px' }}
                 >
                   {/* Top gold bar */}
@@ -341,7 +341,7 @@ const Home = () => {
                 <Link
                   key={blog.id}
                   to={`/blog/${blog.id}`}
-                  className="bg-white dark:bg-slate-850 p-8 rounded-xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm hover:shadow-md hover:-translate-y-1 hover:border-accent-gold/40 dark:hover:border-accent-gold/40 transition-all duration-300 flex flex-col gap-6 relative overflow-hidden group animate-fade-up"
+                  className="bg-white dark:bg-slate-850 p-8 rounded-xl card-border shadow-sm hover:shadow-md hover:-translate-y-1 hover:border-accent-gold/40 dark:hover:border-accent-gold/40 transition-all duration-300 flex flex-col gap-6 relative overflow-hidden group animate-fade-up"
                   style={{ gap: '24px' }}
                 >
                   <div className="absolute top-0 left-0 w-[4px] h-full bg-accent-gold transition-colors" />
@@ -382,10 +382,10 @@ const Home = () => {
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-white">
-                Upcoming & Recent Events
+                Corporate Connections
               </h2>
               <Link to="/events" className="text-xs font-semibold text-accent-gold hover:text-accent-gold-hover flex items-center gap-1">
-                View All Events
+                View All Connections
                 <ArrowUpRight size={14} />
               </Link>
             </div>
@@ -408,7 +408,7 @@ const Home = () => {
                 <Link
                   key={ev.id}
                   to="/events"
-                  className="shrink-0 bg-white dark:bg-slate-850 rounded-xl border border-slate-200/80 dark:border-slate-800/80 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col md:flex-row md:h-[250px] group"
+                  className="shrink-0 bg-white dark:bg-slate-850 rounded-xl card-border overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col md:flex-row md:h-[250px] group"
                   style={{ width: '480px', maxWidth: '100%' }}
                 >
                   {/* Event Image */}
