@@ -4,6 +4,8 @@ import { Calendar, Clock, ArrowLeft } from 'lucide-react';
 import { profileData } from '../data/profile';
 import { fetchBlogs } from '../utils/api';
 
+const STRAPI_URL = process.env.REACT_APP_STRAPI_URL || 'http://localhost:1337';
+
 const BlogPost = () => {
   const { id } = useParams();
   const [post, setPost] = useState(null);
@@ -111,9 +113,19 @@ const BlogPost = () => {
               <ListTag key={index} className={`${listClass} text-slate-600 dark:text-slate-400 font-sans text-sm`}>
                 {block.children?.map((item, itemIdx) => {
                   const itemText = item.children?.map(child => child.text).join('') || '';
-                  return <li key={itemIdx}>{itemText}</li>;
+                  return <li key={itemIdx}>{itemText}</li>
                 })}
               </ListTag>
+            );
+
+          case 'image':
+            const imageUrl = block.image?.url || '';
+            const fullUrl = imageUrl.startsWith('/') ? `${STRAPI_URL}${imageUrl}` : imageUrl;
+            const altText = block.image?.alternativeText || block.image?.name || 'Blog image';
+            return (
+              <div key={index} className="my-6 rounded-xl overflow-hidden border border-slate-200/50 dark:border-slate-800/50 shadow-sm bg-slate-50 dark:bg-slate-950 flex justify-center">
+                <img src={fullUrl} alt={altText} className="max-w-full max-h-[500px] object-contain" />
+              </div>
             );
 
           default:
