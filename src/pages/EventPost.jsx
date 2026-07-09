@@ -64,7 +64,7 @@ const EventPost = () => {
         {/* Event Meta */}
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-3.5 text-xs text-slate-400 font-semibold">
-            <span className="badge badge-accent text-[10px] rounded-full px-2.5 py-0.5 bg-accent-gold text-slate-950 font-semibold border-none">
+            <span className="badge badge-accent text-[10px]">
               {event.category}
             </span>
             <span>•</span>
