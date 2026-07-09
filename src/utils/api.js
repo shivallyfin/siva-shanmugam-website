@@ -30,7 +30,7 @@ export const fetchBlogs = async () => {
         ? item.tags.split(',').map(t => t.trim()).filter(Boolean)
         : (Array.isArray(item.tags) ? item.tags : []);
 
-      const mediaList = getStrapiMedia(item.image);
+      const mediaList = getStrapiMedia(item.media || item.image);
       const coverImage = Array.isArray(mediaList) && mediaList.length > 0 ? mediaList[0] : null;
 
       return {
