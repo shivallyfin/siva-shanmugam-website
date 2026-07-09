@@ -10,6 +10,7 @@ import CorporateConnections from './pages/CorporateConnections';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Contact from './pages/Contact';
+import EventPost from './pages/EventPost';
 import ScrollToTop from './components/ScrollToTop';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
             <Route path="/publications" element={<Publications />} />
             <Route path="/teaching" element={<Teaching />} />
             <Route path="/events" element={<CorporateConnections />} />
+            <Route path="/events/:id" element={<EventPost />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:id" element={<BlogPost />} />
             <Route path="/contact" element={<Contact />} />

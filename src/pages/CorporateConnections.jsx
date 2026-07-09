@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, MapPin, Clock, Award, Users, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Calendar, MapPin, Clock, Award, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import { profileData } from '../data/profile';
 import { fetchEvents } from '../utils/api';
 
@@ -168,7 +169,6 @@ const EventCard = ({ ev }) => {
 const CorporateConnections = () => {
   const [events, setEvents] = useState(profileData.events);
   const [activeFilter, setActiveFilter] = useState('All');
-  const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
     const loadEvents = async () => {
@@ -177,18 +177,6 @@ const CorporateConnections = () => {
     };
     loadEvents();
   }, []);
-
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    if (selectedEvent) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [selectedEvent]);
 
   const categories = ['All', 'Seminar', 'Expo', 'Competition', 'Academic', 'Activity'];
 
@@ -230,97 +218,16 @@ const CorporateConnections = () => {
         {/* Events Grid (3 in a Row) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {filteredEvents.map((ev) => (
-            <div 
+            <Link 
               key={ev.id} 
-              onClick={() => setSelectedEvent(ev)} 
-              className="cursor-pointer h-full hover:-translate-y-1 transition-transform duration-300"
+              to={`/events/${ev.id}`} 
+              className="hover:-translate-y-1 transition-transform duration-300 flex flex-col h-full"
             >
               <EventCard ev={ev} />
-            </div>
+            </Link>
           ))}
         </div>
       </div>
-
-      {/* Event Detail Popup Modal */}
-      {selectedEvent && (
-        <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
-          style={{ zIndex: 999999 }}
-          onClick={() => setSelectedEvent(null)}
-        >
-          <div 
-            className="bg-white dark:bg-slate-900 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative border border-slate-200/50 dark:border-slate-800/50 flex flex-col gap-6 p-6 md:p-8 animate-fade-up"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close Button */}
-            <button 
-              onClick={() => setSelectedEvent(null)}
-              className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors cursor-pointer border-none"
-              aria-label="Close details"
-            >
-              <X size={18} />
-            </button>
-
-            {/* Event Poster / Image */}
-            <div className="w-full bg-slate-950 rounded-xl overflow-hidden flex justify-center items-center" style={{ minHeight: '300px' }}>
-              <img 
-                src={selectedEvent.image || (selectedEvent.images && selectedEvent.images[0])} 
-                alt={selectedEvent.title} 
-                className="max-w-full max-h-[500px] object-contain"
-              />
-            </div>
-
-            {/* Title & Category */}
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <span className="badge badge-accent text-xs font-semibold px-2.5 py-0.5 rounded-full bg-accent-gold text-slate-950 border-none">
-                  {selectedEvent.category}
-                </span>
-                <span className="text-xs text-slate-400 font-semibold flex items-center gap-1">
-                  <Calendar size={12} className="text-accent-gold" />
-                  {selectedEvent.date}
-                </span>
-              </div>
-              <h2 className="text-xl md:text-2xl font-sans font-bold text-slate-900 dark:text-white leading-snug">
-                {selectedEvent.title}
-              </h2>
-            </div>
-
-            {/* Description */}
-            <div className="text-sm text-slate-600 dark:text-slate-350 leading-relaxed font-sans whitespace-pre-wrap border-t border-slate-100 dark:border-slate-800 pt-4">
-              {selectedEvent.description}
-            </div>
-
-            {/* Event Coordinates (Time, Venue, Speaker, Coordinator) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-100 dark:border-slate-800 pt-4 text-xs text-slate-500 dark:text-slate-400 font-sans">
-              {selectedEvent.time && (
-                <div className="flex items-center gap-2.5">
-                  <Clock size={14} className="text-accent-gold shrink-0" />
-                  <span><strong>Time:</strong> {selectedEvent.time}</span>
-                </div>
-              )}
-              {selectedEvent.venue && (
-                <div className="flex items-center gap-2.5">
-                  <MapPin size={14} className="text-accent-gold shrink-0" />
-                  <span><strong>Venue:</strong> {selectedEvent.venue}</span>
-                </div>
-              )}
-              {selectedEvent.speaker && (
-                <div className="flex items-center gap-2.5">
-                  <Award size={14} className="text-accent-gold shrink-0" />
-                  <span><strong>Speaker:</strong> {selectedEvent.speaker}</span>
-                </div>
-              )}
-              {selectedEvent.coordinator && (
-                <div className="flex items-center gap-2.5">
-                  <Users size={14} className="text-accent-gold shrink-0" />
-                  <span><strong>Coordinator:</strong> {selectedEvent.coordinator}</span>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

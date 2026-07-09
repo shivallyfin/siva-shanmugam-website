@@ -407,7 +407,7 @@ const Home = () => {
               {events.map((ev) => (
                 <Link
                   key={ev.id}
-                  to="/events"
+                  to={`/events/${ev.id}`}
                   className="shrink-0 bg-white dark:bg-slate-850 rounded-xl card-border overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col md:flex-row md:h-[250px] group"
                   style={{ width: '480px', maxWidth: '100%' }}
                 >
