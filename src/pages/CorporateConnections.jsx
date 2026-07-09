@@ -244,12 +244,12 @@ const CorporateConnections = () => {
       {/* Event Detail Popup Modal */}
       {selectedEvent && (
         <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-0 sm:p-4"
           style={{ zIndex: 999999 }}
           onClick={() => setSelectedEvent(null)}
         >
           <div 
-            className="bg-white dark:bg-slate-900 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative border border-slate-200/50 dark:border-slate-800/50 flex flex-col gap-6 p-6 md:p-8 animate-fade-up"
+            className="bg-white dark:bg-slate-900 w-full h-full sm:h-auto sm:max-w-2xl sm:rounded-2xl max-h-screen sm:max-h-[90vh] overflow-y-auto shadow-2xl relative border-0 sm:border border-slate-200/50 dark:border-slate-800/50 flex flex-col gap-6 p-6 md:p-8 animate-fade-up"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}

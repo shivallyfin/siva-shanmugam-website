@@ -30,6 +30,9 @@ export const fetchBlogs = async () => {
         ? item.tags.split(',').map(t => t.trim()).filter(Boolean)
         : (Array.isArray(item.tags) ? item.tags : []);
 
+      const mediaList = getStrapiMedia(item.image);
+      const coverImage = Array.isArray(mediaList) && mediaList.length > 0 ? mediaList[0] : null;
+
       return {
         id: item.documentId || `blog-${item.id}`,
         title: item.title,
@@ -38,6 +41,7 @@ export const fetchBlogs = async () => {
         summary: item.summary,
         tags: tags,
         content: item.content, 
+        image: coverImage,
         isStrapi: true
       };
     });

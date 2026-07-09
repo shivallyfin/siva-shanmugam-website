@@ -316,6 +316,17 @@ const BlogPost = () => {
           </div>
         </div>
 
+        {/* Article Cover Image */}
+        {post.image && (
+          <div className="w-full bg-slate-950 rounded-2xl overflow-hidden flex justify-center items-center shadow-sm border border-slate-200/50 dark:border-slate-800/50" style={{ maxHeight: '450px' }}>
+            <img 
+              src={post.image} 
+              alt={post.title} 
+              className="w-full h-auto object-cover max-h-[450px]"
+            />
+          </div>
+        )}
+
         {/* Article Content Area */}
         <div className="bg-white dark:bg-slate-900 p-8 md:p-10 rounded-2xl border border-slate-200/65 dark:border-slate-850 shadow-sm prose dark:prose-invert max-w-none">
           {renderContent(post.content)}
