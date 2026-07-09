@@ -8,6 +8,8 @@ const Blog = () => {
   const [blogPosts, setBlogPosts] = useState(profileData.blogPosts);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTag, setSelectedTag] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 5;
 
   useEffect(() => {
     const loadBlogs = async () => {
@@ -16,6 +18,11 @@ const Blog = () => {
     };
     loadBlogs();
   }, []);
+
+  // Reset to first page when filtering/searching
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedTag]);
 
   // Extract all unique tags
   const allTags = Array.from(
@@ -34,6 +41,11 @@ const Blog = () => {
 
     return matchesSearch && matchesTag;
   });
+
+  // Pagination calculation
+  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+  const startIndex = (currentPage - 1) * postsPerPage;
+  const currentPosts = filteredPosts.slice(startIndex, startIndex + postsPerPage);
 
   return (
     <div className="pt-[110px] pb-24 min-h-screen bg-slate-50 dark:bg-slate-950">
@@ -109,8 +121,8 @@ const Blog = () => {
 
         {/* Blog Post List */}
         <div className="flex flex-col gap-8">
-          {filteredPosts.length > 0 ? (
-            filteredPosts.map((post) => (
+          {currentPosts.length > 0 ? (
+            currentPosts.map((post) => (
               <article
                 key={post.id}
                 className="bg-white dark:bg-slate-900 p-8 rounded-xl card-border shadow-sm hover:shadow-md transition-all duration-300 relative group flex flex-col gap-4"
@@ -164,6 +176,41 @@ const Blog = () => {
             </div>
           )}
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-2 mt-4">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+            >
+              Previous
+            </button>
+            
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`w-9 h-9 rounded-lg border text-xs font-semibold flex items-center justify-center transition-all cursor-pointer ${
+                  currentPage === page
+                    ? 'bg-accent-color border-accent-color text-white dark:bg-accent-gold dark:border-accent-gold dark:text-slate-950'
+                    : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+
+            <button
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

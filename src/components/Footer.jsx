@@ -121,7 +121,17 @@ const Footer = () => {
         <div className="h-[1px] bg-slate-800 w-full mb-8" />
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <span>&copy; {currentYear} {personalInfo.name}. All rights reserved.</span>
+          <span>
+            &copy; {currentYear} {personalInfo.name}. All rights reserved. |{" "}
+            <a
+              href="https://www.linkedin.com/in/bhavesh-m-rakthe-0361aa21b/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-accent-gold transition-colors underline font-medium"
+            >
+              Developed by Bhavesh M Rakthe
+            </a>
+          </span>
           <div className="flex gap-6">
             <Link to="/" className="hover:text-slate-400 transition-colors">Home</Link>
             <Link to="/contact" className="hover:text-slate-400 transition-colors">Contact</Link>

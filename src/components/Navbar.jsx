@@ -29,6 +29,17 @@ const Navbar = () => {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   const toggleTheme = () => {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   };
@@ -122,6 +133,7 @@ const Navbar = () => {
         className={`fixed inset-y-0 right-0 z-40 w-64 bg-white dark:bg-slate-900 shadow-xl border-l border-slate-200 dark:border-slate-850 p-6 pt-24 transform transition-transform duration-300 ease-in-out md:hidden ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
+        style={{ backgroundColor: theme === 'dark' ? '#0b0f19' : '#ffffff' }}
       >
         <ul className="flex flex-col gap-6 list-none">
           {links.map((link) => (

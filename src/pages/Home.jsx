@@ -508,7 +508,7 @@ const Home = () => {
       <section className="py-16 bg-slate-900 text-white relative">
         <div className="container flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex flex-col gap-2 max-w-xl">
-            <h2 className="text-2xl md:text-3xl font-serif font-bold">
+            <h2 className="text-2xl md:text-3xl font-serif font-bold text-white">
               Looking for Academic Collaboration?
             </h2>
             <p className="text-slate-400 text-sm">
