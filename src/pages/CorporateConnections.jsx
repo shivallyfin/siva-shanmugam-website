@@ -169,6 +169,7 @@ const EventCard = ({ ev }) => {
 const CorporateConnections = () => {
   const [events, setEvents] = useState(profileData.events);
   const [activeFilter, setActiveFilter] = useState('All');
+  const [visibleCount, setVisibleCount] = useState(6);
 
   useEffect(() => {
     const loadEvents = async () => {
@@ -178,12 +179,19 @@ const CorporateConnections = () => {
     loadEvents();
   }, []);
 
+  // Reset limit when active category filter changes
+  useEffect(() => {
+    setVisibleCount(6);
+  }, [activeFilter]);
+
   const categories = ['All', 'Seminar', 'Expo', 'Competition', 'Academic', 'Activity'];
 
   const filteredEvents = events.filter((ev) => {
     if (activeFilter === 'All') return true;
     return ev.category === activeFilter;
   });
+
+  const currentEvents = filteredEvents.slice(0, visibleCount);
 
   return (
     <div className="pt-[110px] pb-24 min-h-screen bg-slate-50 dark:bg-slate-950">
@@ -217,7 +225,7 @@ const CorporateConnections = () => {
 
         {/* Events Grid (3 in a Row) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {filteredEvents.map((ev) => (
+          {currentEvents.map((ev) => (
             <Link 
               key={ev.id} 
               to={`/events/${ev.id}`} 
@@ -227,6 +235,18 @@ const CorporateConnections = () => {
             </Link>
           ))}
         </div>
+
+        {/* Load More Button */}
+        {filteredEvents.length > visibleCount && (
+          <div className="flex justify-center mt-12 w-full">
+            <button
+              onClick={() => setVisibleCount((prev) => prev + 6)}
+              className="px-6 py-2.5 rounded-xl bg-accent-color hover:bg-accent-color-hover text-white dark:bg-accent-gold dark:hover:bg-accent-gold/85 dark:text-slate-950 font-semibold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md hover:shadow-lg border-none"
+            >
+              Load More Connections
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

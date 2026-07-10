@@ -8,8 +8,7 @@ const Blog = () => {
   const [blogPosts, setBlogPosts] = useState(profileData.blogPosts);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTag, setSelectedTag] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 5;
+  const [visibleCount, setVisibleCount] = useState(5);
 
   useEffect(() => {
     const loadBlogs = async () => {
@@ -19,9 +18,9 @@ const Blog = () => {
     loadBlogs();
   }, []);
 
-  // Reset to first page when filtering/searching
+  // Reset limit when filtering/searching
   useEffect(() => {
-    setCurrentPage(1);
+    setVisibleCount(5);
   }, [searchTerm, selectedTag]);
 
   // Extract all unique tags
@@ -42,18 +41,15 @@ const Blog = () => {
     return matchesSearch && matchesTag;
   });
 
-  // Pagination calculation
-  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
-  const startIndex = (currentPage - 1) * postsPerPage;
-  const currentPosts = filteredPosts.slice(startIndex, startIndex + postsPerPage);
+  const currentPosts = filteredPosts.slice(0, visibleCount);
 
   return (
     <div className="pt-[110px] pb-24 min-h-screen bg-slate-50 dark:bg-slate-950">
-      <div className="container max-w-4xl flex flex-col gap-12 animate-fade-up">
-        {/* Header */}
+      <div className="container max-w-4xl flex flex-col gap-10 animate-fade-up">
+        {/* Header Section */}
         <div className="flex flex-col gap-4">
           <span className="text-xs font-mono font-bold uppercase tracking-wider text-accent-gold">
-            Thoughts & Analysis
+            Publications & Insights
           </span>
           <h1 className="text-4xl font-serif font-bold text-slate-900 dark:text-white">
             Academic Blog
@@ -61,111 +57,93 @@ const Blog = () => {
           <div className="h-[3px] w-24 bg-accent-gold rounded-full" />
         </div>
 
-        {/* Search & Tag Clouds */}
-        <div className="flex flex-col gap-6 bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm">
-          {/* Search */}
-          <div className="relative w-full">
-            <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-              <Search size={18} />
-            </span>
+        {/* Search and Filter Section */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+          {/* Search Bar */}
+          <div className="md:col-span-2 relative">
             <input
               type="text"
-              placeholder="Search articles by title, keywords or summary..."
+              placeholder="Search posts by title, summary, or tags..."
               value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setSelectedTag(null); // Reset tag cloud filter when searching
-              }}
-              className="w-full pl-10 pr-4 py-2.5 border border-slate-200 dark:border-slate-800 rounded-lg text-sm bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-accent-gold"
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl py-3 pl-11 pr-4 text-sm font-sans placeholder:text-slate-400 focus:outline-none focus:border-accent-gold transition-all"
             />
+            <Search className="absolute left-4 top-3.5 text-slate-400" size={16} />
           </div>
 
-          {/* Tag cloud */}
-          <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 dark:border-slate-850" style={{ paddingTop: '1.25rem' }}>
-            <span className="text-xs font-semibold text-slate-400 flex items-center gap-1.5 mr-2">
-              <Tag size={12} /> Filter by Tag:
-            </span>
-            
-            <button
-              onClick={() => {
-                setSelectedTag(null);
-                setSearchTerm(''); // Reset search term when selecting tag
-              }}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
-                selectedTag === null
-                  ? 'bg-accent-color text-white dark:bg-accent-gold dark:text-slate-950 font-semibold'
-                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-              }`}
+          {/* Tags Dropdown/Select */}
+          <div className="relative">
+            <select
+              value={selectedTag || ''}
+              onChange={(e) => setSelectedTag(e.target.value || null)}
+              className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl py-3 px-4 text-sm font-sans focus:outline-none focus:border-accent-gold transition-all text-slate-700 dark:text-slate-300"
             >
-              All Tags
-            </button>
-
-            {allTags.map((tag) => (
-              <button
-                key={tag}
-                onClick={() => {
-                  setSelectedTag(tag);
-                  setSearchTerm(''); // Reset search term when selecting tag
-                }}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
-                  selectedTag === tag
-                    ? 'bg-accent-color text-white dark:bg-accent-gold dark:text-slate-950 font-semibold'
-                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-                }`}
-              >
-                #{tag}
-              </button>
-            ))}
+              <option value="">All Tags / Topics</option>
+              {allTags.map((tag, idx) => (
+                <option key={idx} value={tag}>
+                  #{tag}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
-        {/* Blog Post List */}
+        {/* Blog Posts List */}
         <div className="flex flex-col gap-8">
           {currentPosts.length > 0 ? (
             currentPosts.map((post) => (
               <article
                 key={post.id}
-                className="bg-white dark:bg-slate-900 p-8 rounded-xl card-border shadow-sm hover:shadow-md transition-all duration-300 relative group flex flex-col gap-4"
+                className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-xl card-border shadow-sm hover:shadow-md transition-all duration-300 relative group flex flex-col gap-4"
               >
                 <div className="absolute top-0 left-0 w-[4px] h-full bg-slate-100 dark:bg-slate-800 group-hover:bg-accent-gold transition-colors" />
-
-                <div className="flex items-center gap-4 text-xs text-slate-400 font-semibold">
+                
+                {/* Meta details */}
+                <div className="flex items-center gap-3.5 text-xs text-slate-400 font-semibold">
                   <span className="flex items-center gap-1">
-                    <Calendar size={13} />
+                    <Calendar size={13} className="text-accent-gold" />
                     {post.date}
                   </span>
                   <span>•</span>
                   <span className="flex items-center gap-1">
-                    <Clock size={13} />
+                    <Clock size={13} className="text-accent-gold" />
                     {post.readTime}
                   </span>
                 </div>
 
-                <h2 className="text-2xl font-sans font-bold text-slate-900 dark:text-white group-hover:text-accent-color dark:group-hover:text-accent-gold transition-colors">
-                  <Link to={`/blog/${post.id}`}>
-                    {post.title}
-                  </Link>
+                {/* Title */}
+                <h2 className="text-xl font-sans font-bold text-slate-900 dark:text-white leading-snug group-hover:text-accent-gold transition-colors">
+                  <Link to={`/blog/${post.id}`}>{post.title}</Link>
                 </h2>
 
-                <div className="flex flex-wrap gap-1.5">
-                  {post.tags.map((tag, i) => (
-                    <span key={i} className="text-[10px] font-semibold text-slate-400 bg-slate-100 dark:bg-slate-950 border border-slate-200/10 px-2.5 py-0.5 rounded-full">
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-
-                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-sans mt-1">
+                {/* Summary */}
+                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-sans line-clamp-3">
                   {post.summary}
                 </p>
 
-                <div className="border-t border-slate-100 dark:border-slate-850 flex justify-between items-center" style={{ paddingTop: '16px', marginTop: '16px' }}>
+                {/* Footer Tags & CTA */}
+                <div className="flex flex-wrap items-center justify-between gap-4 mt-2">
+                  <div className="flex flex-wrap gap-2">
+                    {post.tags.map((tag, idx) => (
+                      <span
+                        key={idx}
+                        onClick={() => setSelectedTag(tag)}
+                        className={`text-[9px] font-semibold px-2 py-0.5 rounded-full border transition-all cursor-pointer ${
+                          selectedTag === tag
+                            ? 'bg-accent-gold/20 border-accent-gold text-accent-gold'
+                            : 'bg-slate-50 dark:bg-slate-800 border-slate-200/50 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-slate-300'
+                        }`}
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+
                   <Link
                     to={`/blog/${post.id}`}
-                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent-color dark:text-accent-gold hover:underline group-hover:gap-2.5 transition-all"
+                    className="inline-flex items-center gap-1 text-xs font-bold text-accent-color dark:text-accent-gold group-hover:underline"
                   >
-                    Read Full Article
-                    <ArrowRight size={15} />
+                    Read Full Article <ArrowRight size={13} />
                   </Link>
                 </div>
               </article>
@@ -177,37 +155,14 @@ const Blog = () => {
           )}
         </div>
 
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-4">
+        {/* Load More Button */}
+        {filteredPosts.length > visibleCount && (
+          <div className="flex justify-center mt-4">
             <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+              onClick={() => setVisibleCount((prev) => prev + 5)}
+              className="px-6 py-2.5 rounded-xl bg-accent-color hover:bg-accent-color-hover text-white dark:bg-accent-gold dark:hover:bg-accent-gold/85 dark:text-slate-950 font-semibold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md hover:shadow-lg flex items-center gap-1.5 border-none"
             >
-              Previous
-            </button>
-            
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <button
-                key={page}
-                onClick={() => setCurrentPage(page)}
-                className={`w-9 h-9 rounded-lg border text-xs font-semibold flex items-center justify-center transition-all cursor-pointer ${
-                  currentPage === page
-                    ? 'bg-accent-color border-accent-color text-white dark:bg-accent-gold dark:border-accent-gold dark:text-slate-950'
-                    : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-                }`}
-              >
-                {page}
-              </button>
-            ))}
-
-            <button
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
-            >
-              Next
+              Load More Posts
             </button>
           </div>
         )}
