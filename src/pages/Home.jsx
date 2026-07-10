@@ -24,9 +24,9 @@ const Home = () => {
 
   useEffect(() => {
     const loadCMSData = async () => {
-      const cmsBlogs = await fetchBlogs();
+      const cmsBlogs = await fetchBlogs(2);
       setBlogPosts(cmsBlogs);
-      const cmsEvents = await fetchEvents();
+      const cmsEvents = await fetchEvents(5);
       setEvents(cmsEvents);
     };
     loadCMSData();
@@ -214,170 +214,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Core Research Interests Highlights */}
-      <section className="py-20 bg-slate-50/50 dark:bg-slate-900/30 border-y border-slate-200/40 dark:border-slate-800/40">
-        <div className="container flex flex-col gap-12">
-          <div className="max-w-2xl mr-auto flex flex-col gap-3 items-start text-left">
-            <h2 className="text-3xl font-serif font-bold text-slate-950 dark:text-white">
-              Primary Research Areas
-            </h2>
-            <div className="h-[2px] w-20 bg-accent-gold rounded-full" />
-            <p className="text-slate-500 text-sm">
-              Investigating the operational and analytical factors governing business performance and corporate capital structure.
-            </p>
-          </div>
-
-          {/* Slider Container */}
-          <div className="relative w-full animate-fade-up">
-            {/* Scrollable Track */}
-            <div
-              ref={scrollContainerRef}
-              onScroll={handleScroll}
-              className="flex overflow-x-auto pb-4 gap-6 scrollbar-none"
-              style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
-            >
-              {aboutMe.researchInterests.map((interest, i) => (
-                <Link
-                  key={i}
-                  to="/publications"
-                  className="shrink-0 bg-white dark:bg-slate-850 p-6 md:p-8 rounded-2xl card-border shadow-md hover:shadow-xl hover:-translate-y-1.5 hover:border-accent-gold/40 dark:hover:border-accent-gold/40 transition-all duration-300 flex flex-col gap-4 relative overflow-hidden group"
-                  style={{ width: '360px', maxWidth: '100%', height: '230px' }}
-                >
-                  {/* Top gold bar */}
-                  <div className="absolute top-0 left-0 w-full h-[4px] bg-slate-100 dark:bg-slate-850 group-hover:bg-accent-gold transition-colors" />
-
-                  {/* Header metadata row */}
-                  <div className="flex justify-between items-center">
-                    <span
-                      className="badge badge-accent"
-                      style={{ fontSize: '10px', padding: '0.2rem 0.65rem' }}
-                    >
-                      Research Area
-                    </span>
-                    <span className="text-xl font-serif font-black text-slate-200 dark:text-slate-800 group-hover:text-accent-gold/20 transition-colors">
-                      0{i + 1}
-                    </span>
-                  </div>
-
-                  {/* Content details */}
-                  <div className="flex flex-col gap-2 flex-grow">
-                    <h3 className="text-base md:text-lg font-sans font-bold text-slate-900 dark:text-white leading-snug group-hover:text-accent-gold transition-colors">
-                      {interest.title}
-                    </h3>
-                    <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-light line-clamp-4">
-                      {interest.description}
-                    </p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-
-            {/* Carousel Controls (Arrows and Dots) */}
-            <div className="flex items-center justify-center gap-6" style={{ marginTop: '28px' }}>
-              <button
-                onClick={() => scroll('left')}
-                className="rounded-full bg-white dark:bg-slate-900 text-accent-gold hover:bg-accent-gold hover:text-slate-950 dark:hover:text-slate-950 transition-all duration-300 cursor-pointer shadow-md flex items-center justify-center border border-accent-gold/40 hover:border-accent-gold"
-                style={{ width: '36px', height: '36px' }}
-                aria-label="Scroll left"
-              >
-                <ChevronLeft size={18} />
-              </button>
-
-              <div className="flex gap-2 select-none">
-                {Array.from({ length: isDesktop ? Math.max(aboutMe.researchInterests.length - 2, 1) : aboutMe.researchInterests.length }).map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => scrollToCard(i)}
-                    className="transition-all duration-300 cursor-pointer"
-                    style={{
-                      height: '8px',
-                      width: activeDot === i ? '24px' : '8px',
-                      borderRadius: '9999px',
-                      backgroundColor: activeDot === i ? 'var(--accent-gold)' : 'rgba(156, 163, 175, 0.4)',
-                      border: 'none',
-                      outline: 'none',
-                      padding: 0
-                    }}
-                    aria-label={`Go to slide ${i + 1}`}
-                  />
-                ))}
-              </div>
-
-              <button
-                onClick={() => scroll('right')}
-                className="rounded-full bg-white dark:bg-slate-900 text-accent-gold hover:bg-accent-gold hover:text-slate-950 dark:hover:text-slate-950 transition-all duration-300 cursor-pointer shadow-md flex items-center justify-center border border-accent-gold/40 hover:border-accent-gold"
-                style={{ width: '36px', height: '36px' }}
-                aria-label="Scroll right"
-              >
-                <ChevronRight size={18} />
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Recent Activity Section */}
-      <section className="py-20">
-        <div className="container">
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-white">
-                  Recent Thoughts
-                </h2>
-                <Link to="/blog" className="text-xs font-semibold text-accent-gold hover:text-accent-gold-hover flex items-center gap-1">
-                  Read Blog
-                  <ArrowUpRight size={14} />
-                </Link>
-              </div>
-              <div className="h-[2px] w-20 bg-accent-gold rounded-full" />
-              <p className="text-slate-500 text-sm max-w-2xl font-sans">
-                Empirical research commentary, academic articles, and insights on corporate finance, working capital, and emerging financial markets.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {latestBlogs.map((blog) => (
-                <Link
-                  key={blog.id}
-                  to={`/blog/${blog.id}`}
-                  className="bg-white dark:bg-slate-850 p-8 rounded-xl card-border shadow-sm hover:shadow-md hover:-translate-y-1 hover:border-accent-gold/40 dark:hover:border-accent-gold/40 transition-all duration-300 flex flex-col gap-6 relative overflow-hidden group animate-fade-up"
-                  style={{ gap: '24px' }}
-                >
-                  <div className="absolute top-0 left-0 w-[4px] h-full bg-accent-gold transition-colors" />
-                  <div className="flex items-center gap-2.5 text-xs text-slate-400 font-semibold">
-                    <span>{blog.date}</span>
-                    <span>•</span>
-                    <span>{blog.readTime}</span>
-                  </div>
-                  <h3 className="text-xl font-sans font-bold text-slate-900 dark:text-white leading-snug group-hover:text-accent-gold transition-colors">
-                    {blog.title}
-                  </h3>
-                  <div className="flex flex-wrap gap-2.5">
-                    {blog.tags.slice(0, 3).map((tag, i) => (
-                      <span key={i} className="text-[10px] font-semibold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 rounded-full">
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-3 flex-grow leading-relaxed">
-                    {blog.summary}
-                  </p>
-                  <span
-                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent-color dark:text-accent-gold group-hover:underline mt-2 self-start"
-                  >
-                    Read Full Post
-                    <ArrowRight size={15} />
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Latest Events Section */}
-      <section className="py-20 bg-slate-50/50 dark:bg-slate-900/30">
+      {/* Latest Events Section (Corporate Connections) */}
+      <section className="py-20 bg-slate-50/50 dark:bg-slate-900/30 border-b border-slate-200/40 dark:border-slate-800/40">
         <div className="container flex flex-col gap-12">
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
@@ -499,6 +337,168 @@ const Home = () => {
               >
                 <ChevronRight size={18} />
               </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Core Research Interests Highlights */}
+      <section className="py-20 bg-white dark:bg-slate-950">
+        <div className="container flex flex-col gap-12">
+          <div className="max-w-2xl mr-auto flex flex-col gap-3 items-start text-left">
+            <h2 className="text-3xl font-serif font-bold text-slate-950 dark:text-white">
+              Primary Research Areas
+            </h2>
+            <div className="h-[2px] w-20 bg-accent-gold rounded-full" />
+            <p className="text-slate-500 text-sm">
+              Investigating the operational and analytical factors governing business performance and corporate capital structure.
+            </p>
+          </div>
+
+          {/* Slider Container */}
+          <div className="relative w-full animate-fade-up">
+            {/* Scrollable Track */}
+            <div
+              ref={scrollContainerRef}
+              onScroll={handleScroll}
+              className="flex overflow-x-auto pb-4 gap-6 scrollbar-none"
+              style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
+            >
+              {aboutMe.researchInterests.map((interest, i) => (
+                <Link
+                  key={i}
+                  to="/publications"
+                  className="shrink-0 bg-slate-50 dark:bg-slate-900 p-6 md:p-8 rounded-2xl card-border shadow-md hover:shadow-xl hover:-translate-y-1.5 hover:border-accent-gold/40 dark:hover:border-accent-gold/40 transition-all duration-300 flex flex-col gap-4 relative overflow-hidden group"
+                  style={{ width: '360px', maxWidth: '100%', height: '230px' }}
+                >
+                  {/* Top gold bar */}
+                  <div className="absolute top-0 left-0 w-full h-[4px] bg-slate-100 dark:bg-slate-850 group-hover:bg-accent-gold transition-colors" />
+
+                  {/* Header metadata row */}
+                  <div className="flex justify-between items-center">
+                    <span
+                      className="badge badge-accent"
+                      style={{ fontSize: '10px', padding: '0.2rem 0.65rem' }}
+                    >
+                      Research Area
+                    </span>
+                    <span className="text-xl font-serif font-black text-slate-200 dark:text-slate-800 group-hover:text-accent-gold/20 transition-colors">
+                      0{i + 1}
+                    </span>
+                  </div>
+
+                  {/* Content details */}
+                  <div className="flex flex-col gap-2 flex-grow">
+                    <h3 className="text-base md:text-lg font-sans font-bold text-slate-900 dark:text-white leading-snug group-hover:text-accent-gold transition-colors">
+                      {interest.title}
+                    </h3>
+                    <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-light line-clamp-4">
+                      {interest.description}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            {/* Carousel Controls (Arrows and Dots) */}
+            <div className="flex items-center justify-center gap-6" style={{ marginTop: '28px' }}>
+              <button
+                onClick={() => scroll('left')}
+                className="rounded-full bg-white dark:bg-slate-900 text-accent-gold hover:bg-accent-gold hover:text-slate-950 dark:hover:text-slate-950 transition-all duration-300 cursor-pointer shadow-md flex items-center justify-center border border-accent-gold/40 hover:border-accent-gold"
+                style={{ width: '36px', height: '36px' }}
+                aria-label="Scroll left"
+              >
+                <ChevronLeft size={18} />
+              </button>
+
+              <div className="flex gap-2 select-none">
+                {Array.from({ length: isDesktop ? Math.max(aboutMe.researchInterests.length - 2, 1) : aboutMe.researchInterests.length }).map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => scrollToCard(i)}
+                    className="transition-all duration-300 cursor-pointer"
+                    style={{
+                      height: '8px',
+                      width: activeDot === i ? '24px' : '8px',
+                      borderRadius: '9999px',
+                      backgroundColor: activeDot === i ? 'var(--accent-gold)' : 'rgba(156, 163, 175, 0.4)',
+                      border: 'none',
+                      outline: 'none',
+                      padding: 0
+                    }}
+                    aria-label={`Go to slide ${i + 1}`}
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={() => scroll('right')}
+                className="rounded-full bg-white dark:bg-slate-900 text-accent-gold hover:bg-accent-gold hover:text-slate-950 dark:hover:text-slate-950 transition-all duration-300 cursor-pointer shadow-md flex items-center justify-center border border-accent-gold/40 hover:border-accent-gold"
+                style={{ width: '36px', height: '36px' }}
+                aria-label="Scroll right"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Recent Activity Section */}
+      <section className="py-20 bg-slate-50/50 dark:bg-slate-900/30 border-t border-slate-200/40 dark:border-slate-800/40">
+        <div className="container">
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-white">
+                  Recent Thoughts
+                </h2>
+                <Link to="/blog" className="text-xs font-semibold text-accent-gold hover:text-accent-gold-hover flex items-center gap-1">
+                  Read Blog
+                  <ArrowUpRight size={14} />
+                </Link>
+              </div>
+              <div className="h-[2px] w-20 bg-accent-gold rounded-full" />
+              <p className="text-slate-500 text-sm max-w-2xl font-sans">
+                Empirical research commentary, academic articles, and insights on corporate finance, working capital, and emerging financial markets.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {latestBlogs.map((blog) => (
+                <Link
+                  key={blog.id}
+                  to={`/blog/${blog.id}`}
+                  className="bg-white dark:bg-slate-850 p-8 rounded-xl card-border shadow-sm hover:shadow-md hover:-translate-y-1 hover:border-accent-gold/40 dark:hover:border-accent-gold/40 transition-all duration-300 flex flex-col gap-6 relative overflow-hidden group animate-fade-up"
+                  style={{ gap: '24px' }}
+                >
+                  <div className="absolute top-0 left-0 w-[4px] h-full bg-accent-gold transition-colors" />
+                  <div className="flex items-center gap-2.5 text-xs text-slate-400 font-semibold">
+                    <span>{blog.date}</span>
+                    <span>•</span>
+                    <span>{blog.readTime}</span>
+                  </div>
+                  <h3 className="text-xl font-sans font-bold text-slate-900 dark:text-white leading-snug group-hover:text-accent-gold transition-colors">
+                    {blog.title}
+                  </h3>
+                  <div className="flex flex-wrap gap-2.5">
+                    {blog.tags.slice(0, 3).map((tag, i) => (
+                      <span key={i} className="text-[10px] font-semibold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 rounded-full">
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-3 flex-grow leading-relaxed">
+                    {blog.summary}
+                  </p>
+                  <span
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent-color dark:text-accent-gold group-hover:underline mt-2 self-start"
+                  >
+                    Read Full Post
+                    <ArrowRight size={15} />
+                  </span>
+                </Link>
+              ))}
             </div>
           </div>
         </div>

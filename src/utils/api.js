@@ -16,9 +16,13 @@ export const getStrapiMedia = (media) => {
 };
 
 // Fetch Blogs from Strapi (falls back to static data if CMS is down or empty)
-export const fetchBlogs = async () => {
+export const fetchBlogs = async (limit) => {
   try {
-    const res = await fetch(`${STRAPI_URL}/api/blogs?populate=*`);
+    let url = `${STRAPI_URL}/api/blogs?populate=*&sort[0]=publishedAt:desc`;
+    if (limit) {
+      url += `&pagination[pageSize]=${limit}`;
+    }
+    const res = await fetch(url);
     if (!res.ok) throw new Error('Failed to fetch from CMS');
     const { data } = await res.json();
     
@@ -52,9 +56,13 @@ export const fetchBlogs = async () => {
 };
 
 // Fetch Events from Strapi (falls back to static data if CMS is down or empty)
-export const fetchEvents = async () => {
+export const fetchEvents = async (limit) => {
   try {
-    const res = await fetch(`${STRAPI_URL}/api/events?populate=*`);
+    let url = `${STRAPI_URL}/api/events?populate=*&sort[0]=publishedAt:desc`;
+    if (limit) {
+      url += `&pagination[pageSize]=${limit}`;
+    }
+    const res = await fetch(url);
     if (!res.ok) throw new Error('Failed to fetch from CMS');
     const { data } = await res.json();
 
