@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Calendar, Clock, ArrowRight, Tag } from 'lucide-react';
+import { Search, Calendar, Clock, ArrowRight } from 'lucide-react';
 import { profileData } from '../data/profile';
 import { fetchBlogs } from '../utils/api';
 
