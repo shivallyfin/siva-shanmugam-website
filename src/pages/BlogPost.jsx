@@ -13,11 +13,32 @@ const BlogPost = () => {
 
   useEffect(() => {
     const loadPost = async () => {
-      setLoading(true);
+      // Try to load from cache first
+      const cached = localStorage.getItem('siva_blogs_full_cache');
+      let foundInCache = false;
+      if (cached) {
+        try {
+          const cmsBlogs = JSON.parse(cached);
+          const found = cmsBlogs.find((p) => p.id === id);
+          if (found) {
+            setPost(found);
+            setLoading(false);
+            foundInCache = true;
+          }
+        } catch (e) {}
+      }
+
+      if (!foundInCache) {
+        setLoading(true);
+      }
+
       try {
         const cmsBlogs = await fetchBlogs();
         const found = cmsBlogs.find((p) => p.id === id);
         setPost(found || null);
+        
+        // Update cache
+        localStorage.setItem('siva_blogs_full_cache', JSON.stringify(cmsBlogs));
       } catch (error) {
         console.error('Failed to load blog post:', error);
       } finally {

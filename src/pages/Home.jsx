@@ -23,11 +23,26 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    // Load from cache first for instant layout rendering
+    const cachedBlogs = localStorage.getItem('siva_blogs_cache');
+    const cachedEvents = localStorage.getItem('siva_events_cache');
+    
+    if (cachedBlogs) {
+      try { setBlogPosts(JSON.parse(cachedBlogs)); } catch (e) {}
+    }
+    if (cachedEvents) {
+      try { setEvents(JSON.parse(cachedEvents)); } catch (e) {}
+    }
+
     const loadCMSData = async () => {
       const cmsBlogs = await fetchBlogs(2);
       setBlogPosts(cmsBlogs);
       const cmsEvents = await fetchEvents(5);
       setEvents(cmsEvents);
+      
+      // Update cache
+      localStorage.setItem('siva_blogs_cache', JSON.stringify(cmsBlogs));
+      localStorage.setItem('siva_events_cache', JSON.stringify(cmsEvents));
     };
     loadCMSData();
   }, []);

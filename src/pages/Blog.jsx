@@ -11,9 +11,16 @@ const Blog = () => {
   const [visibleCount, setVisibleCount] = useState(5);
 
   useEffect(() => {
+    // Load from cache first for instant layout rendering
+    const cached = localStorage.getItem('siva_blogs_full_cache');
+    if (cached) {
+      try { setBlogPosts(JSON.parse(cached)); } catch (e) {}
+    }
+
     const loadBlogs = async () => {
       const cmsBlogs = await fetchBlogs();
       setBlogPosts(cmsBlogs);
+      localStorage.setItem('siva_blogs_full_cache', JSON.stringify(cmsBlogs));
     };
     loadBlogs();
   }, []);

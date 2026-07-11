@@ -11,11 +11,32 @@ const EventPost = () => {
 
   useEffect(() => {
     const loadEvent = async () => {
-      setLoading(true);
+      // Try to load from cache first
+      const cached = localStorage.getItem('siva_events_full_cache');
+      let foundInCache = false;
+      if (cached) {
+        try {
+          const cmsEvents = JSON.parse(cached);
+          const found = cmsEvents.find((e) => e.id === id);
+          if (found) {
+            setEvent(found);
+            setLoading(false);
+            foundInCache = true;
+          }
+        } catch (e) {}
+      }
+
+      if (!foundInCache) {
+        setLoading(true);
+      }
+
       try {
         const cmsEvents = await fetchEvents();
         const found = cmsEvents.find((e) => e.id === id);
         setEvent(found || null);
+        
+        // Update cache
+        localStorage.setItem('siva_events_full_cache', JSON.stringify(cmsEvents));
       } catch (error) {
         console.error('Failed to load event:', error);
       } finally {
