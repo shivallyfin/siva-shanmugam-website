@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin, Clock, Award, Users, ChevronLeft, ChevronRight } from 'lucide-react';
-import { profileData } from '../data/profile';
 import { fetchEvents } from '../utils/api';
 
 // Sub-component for individual event card to manage its own image slide state
@@ -167,24 +166,61 @@ const EventCard = ({ ev }) => {
 };
 
 const CorporateConnections = () => {
-  const [events, setEvents] = useState(profileData.events);
+  const [events, setEvents] = useState([]);
   const [activeFilter, setActiveFilter] = useState('All');
   const [visibleCount, setVisibleCount] = useState(6);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Load from cache first for instant layout rendering
     const cached = localStorage.getItem('siva_events_full_cache');
+    let hasCache = false;
     if (cached) {
-      try { setEvents(JSON.parse(cached)); } catch (e) {}
+      try { 
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setEvents(parsed);
+          setLoading(false);
+          hasCache = true;
+        }
+      } catch (e) {}
+    }
+
+    if (!hasCache) {
+      setLoading(true);
     }
 
     const loadEvents = async () => {
       const cmsEvents = await fetchEvents();
       setEvents(cmsEvents);
+      setLoading(false);
       localStorage.setItem('siva_events_full_cache', JSON.stringify(cmsEvents));
     };
     loadEvents();
   }, []);
+
+  // Skeleton loading component
+  const EventSkeleton = () => (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {[1, 2, 3].map((n) => (
+        <div key={n} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm animate-pulse flex flex-col h-full overflow-hidden">
+          <div className="w-full bg-slate-200 dark:bg-slate-800" style={{ height: '360px' }} />
+          <div className="p-6 flex flex-col gap-4 flex-grow bg-white dark:bg-slate-900">
+            <div className="flex justify-between items-center">
+              <div className="h-5 w-14 bg-slate-200 dark:bg-slate-800 rounded" />
+              <div className="h-4 w-20 bg-slate-200 dark:bg-slate-800 rounded" />
+            </div>
+            <div className="h-6 w-5/6 bg-slate-200 dark:bg-slate-800 rounded" />
+            <div className="h-4 w-full bg-slate-200 dark:bg-slate-800 rounded" />
+            <div className="border-t border-slate-100 dark:border-slate-800 pt-4 mt-auto space-y-2">
+              <div className="h-3 w-1/2 bg-slate-200 dark:bg-slate-800 rounded" />
+              <div className="h-3 w-2/3 bg-slate-200 dark:bg-slate-800 rounded" />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 
   // Reset limit when active category filter changes
   useEffect(() => {
@@ -231,17 +267,21 @@ const CorporateConnections = () => {
         </div>
 
         {/* Events Grid (3 in a Row) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {currentEvents.map((ev) => (
-            <Link 
-              key={ev.id} 
-              to={`/events/${ev.id}`} 
-              className="hover:-translate-y-1 transition-transform duration-300 flex flex-col h-full"
-            >
-              <EventCard ev={ev} />
-            </Link>
-          ))}
-        </div>
+        {loading && currentEvents.length === 0 ? (
+          <EventSkeleton />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {currentEvents.map((ev) => (
+              <Link 
+                key={ev.id} 
+                to={`/events/${ev.id}`} 
+                className="hover:-translate-y-1 transition-transform duration-300 flex flex-col h-full"
+              >
+                <EventCard ev={ev} />
+              </Link>
+            ))}
+          </div>
+        )}
 
         {/* Load More Button */}
         {filteredEvents.length > visibleCount && (

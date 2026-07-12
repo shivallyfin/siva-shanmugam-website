@@ -1,29 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Calendar, Clock, ArrowRight } from 'lucide-react';
-import { profileData } from '../data/profile';
 import { fetchBlogs } from '../utils/api';
 
 const Blog = () => {
-  const [blogPosts, setBlogPosts] = useState(profileData.blogPosts);
+  const [blogPosts, setBlogPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTag, setSelectedTag] = useState(null);
   const [visibleCount, setVisibleCount] = useState(5);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Load from cache first for instant layout rendering
     const cached = localStorage.getItem('siva_blogs_full_cache');
     if (cached) {
-      try { setBlogPosts(JSON.parse(cached)); } catch (e) {}
+      try { 
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setBlogPosts(parsed);
+          setLoading(false);
+        }
+      } catch (e) {}
     }
 
     const loadBlogs = async () => {
       const cmsBlogs = await fetchBlogs();
       setBlogPosts(cmsBlogs);
+      setLoading(false);
       localStorage.setItem('siva_blogs_full_cache', JSON.stringify(cmsBlogs));
     };
     loadBlogs();
   }, []);
+
+  // Skeleton loading component
+  const BlogSkeleton = () => (
+    <div className="flex flex-col gap-8">
+      {[1, 2, 3].map((n) => (
+        <div key={n} className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm animate-pulse flex flex-col gap-4">
+          <div className="flex gap-4">
+            <div className="h-4 w-24 bg-slate-200 dark:bg-slate-800 rounded" />
+            <div className="h-4 w-20 bg-slate-200 dark:bg-slate-800 rounded" />
+          </div>
+          <div className="h-6 w-3/4 bg-slate-200 dark:bg-slate-800 rounded mt-2" />
+          <div className="space-y-2 mt-2">
+            <div className="h-3 w-full bg-slate-200 dark:bg-slate-800 rounded" />
+            <div className="h-3 w-5/6 bg-slate-200 dark:bg-slate-800 rounded" />
+          </div>
+          <div className="flex justify-between items-center mt-4">
+            <div className="flex gap-2">
+              <div className="h-5 w-12 bg-slate-200 dark:bg-slate-800 rounded-full" />
+              <div className="h-5 w-16 bg-slate-200 dark:bg-slate-800 rounded-full" />
+            </div>
+            <div className="h-4 w-24 bg-slate-200 dark:bg-slate-800 rounded" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 
   // Reset limit when filtering/searching
   useEffect(() => {
@@ -97,7 +130,9 @@ const Blog = () => {
 
         {/* Blog Posts List */}
         <div className="flex flex-col gap-8">
-          {currentPosts.length > 0 ? (
+          {loading && currentPosts.length === 0 ? (
+            <BlogSkeleton />
+          ) : currentPosts.length > 0 ? (
             currentPosts.map((post) => (
               <article
                 key={post.id}
