@@ -6,13 +6,14 @@ import { fetchBlogs, fetchEvents } from '../utils/api';
 
 const Home = () => {
   const { personalInfo, aboutMe, publications } = profileData;
-  const [blogPosts, setBlogPosts] = useState(profileData.blogPosts);
-  const [events, setEvents] = useState(profileData.events);
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [events, setEvents] = useState([]);
   const scrollContainerRef = useRef(null);
   const eventsScrollContainerRef = useRef(null);
   const [activeDot, setActiveDot] = useState(0);
   const [activeEventsDot, setActiveEventsDot] = useState(0);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
@@ -26,12 +27,31 @@ const Home = () => {
     // Load from cache first for instant layout rendering
     const cachedBlogs = localStorage.getItem('siva_blogs_cache');
     const cachedEvents = localStorage.getItem('siva_events_cache');
+    let hasCache = false;
     
     if (cachedBlogs) {
-      try { setBlogPosts(JSON.parse(cachedBlogs)); } catch (e) {}
+      try { 
+        const parsed = JSON.parse(cachedBlogs);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setBlogPosts(parsed);
+          hasCache = true;
+        }
+      } catch (e) {}
     }
     if (cachedEvents) {
-      try { setEvents(JSON.parse(cachedEvents)); } catch (e) {}
+      try { 
+        const parsed = JSON.parse(cachedEvents);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setEvents(parsed);
+          hasCache = true;
+        }
+      } catch (e) {}
+    }
+
+    if (hasCache) {
+      setLoading(false);
+    } else {
+      setLoading(true);
     }
 
     const loadCMSData = async () => {
@@ -39,6 +59,7 @@ const Home = () => {
       setBlogPosts(cmsBlogs);
       const cmsEvents = await fetchEvents(5);
       setEvents(cmsEvents);
+      setLoading(false);
       
       // Update cache
       localStorage.setItem('siva_blogs_cache', JSON.stringify(cmsBlogs));
@@ -250,68 +271,89 @@ const Home = () => {
 
           {/* Slider Container */}
           <div className="relative w-full animate-fade-up">
-            {/* Scrollable Track */}
-            <div
-              ref={eventsScrollContainerRef}
-              onScroll={handleEventsScroll}
-              className="flex overflow-x-auto pb-4 gap-6 scrollbar-none"
-              style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
-            >
-              {events.map((ev) => (
-                <Link
-                  key={ev.id}
-                  to={`/events/${ev.id}`}
-                  className="shrink-0 bg-white dark:bg-slate-850 rounded-xl card-border overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col md:flex-row md:h-[250px] group"
-                  style={{ width: '480px', maxWidth: '100%' }}
-                >
-                  {/* Event Image */}
-                  <div className="w-full md:w-2/5 h-48 md:h-auto relative overflow-hidden bg-slate-950 shrink-0">
-                    <img
-                      src={ev.image || (ev.images && ev.images[0])}
-                      alt={ev.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute top-3 left-3">
-                      <span className="badge badge-accent text-[10px] rounded-full px-2.5 py-0.5 bg-accent-gold text-slate-950 font-semibold border-none">
-                        {ev.category}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Event Details */}
-                  <div className="p-6 flex flex-col justify-between flex-grow gap-4">
-                    <div className="flex flex-col gap-2">
-                      <div className="flex items-center gap-1.5 text-xs text-slate-400 font-semibold">
-                        <Calendar size={13} className="text-accent-gold shrink-0" />
-                        <span>{ev.date}</span>
+            {loading && events.length === 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {[1, 2, 3].map((n) => (
+                  <div key={n} className="bg-white dark:bg-slate-900 rounded-xl card-border overflow-hidden shadow-sm flex flex-col md:flex-row md:h-[250px] relative">
+                    <div className="w-full md:w-2/5 h-48 md:h-auto shimmer shrink-0" />
+                    <div className="p-6 flex flex-col justify-between flex-grow gap-4 bg-white dark:bg-slate-900">
+                      <div className="flex flex-col gap-2">
+                        <div className="h-4 w-20 rounded shimmer" />
+                        <div className="h-5 w-5/6 rounded shimmer mt-1" />
+                        <div className="h-3 w-full rounded shimmer" />
                       </div>
-                      <h3 className="text-base font-sans font-bold text-slate-900 dark:text-white leading-snug group-hover:text-accent-gold transition-colors line-clamp-2">
-                        {ev.title}
-                      </h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-3 leading-relaxed font-sans">
-                        {ev.description}
-                      </p>
-                    </div>
-
-                    {/* Metadata */}
-                    <div className="flex flex-col gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800 pt-3 mt-auto">
-                      {ev.time && (
-                        <div className="flex items-center gap-1.5">
-                          <Clock size={11} className="text-accent-gold shrink-0" />
-                          <span className="line-clamp-1 font-sans"><strong>Time:</strong> {ev.time}</span>
-                        </div>
-                      )}
-                      {ev.venue && (
-                        <div className="flex items-center gap-1.5">
-                          <MapPin size={11} className="text-accent-gold shrink-0" />
-                          <span className="line-clamp-1 font-sans"><strong>Venue:</strong> {ev.venue}</span>
-                        </div>
-                      )}
+                      <div className="border-t border-slate-100 dark:border-slate-800 pt-3 mt-auto space-y-1.5">
+                        <div className="h-3 w-1/2 rounded shimmer" />
+                        <div className="h-3 w-2/3 rounded shimmer" />
+                      </div>
                     </div>
                   </div>
-                </Link>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              /* Scrollable Track */
+              <div
+                ref={eventsScrollContainerRef}
+                onScroll={handleEventsScroll}
+                className="flex overflow-x-auto pb-4 gap-6 scrollbar-none"
+                style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
+              >
+                {events.map((ev) => (
+                  <Link
+                    key={ev.id}
+                    to={`/events/${ev.id}`}
+                    className="shrink-0 bg-white dark:bg-slate-850 rounded-xl card-border overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col md:flex-row md:h-[250px] group"
+                    style={{ width: '480px', maxWidth: '100%' }}
+                  >
+                    {/* Event Image */}
+                    <div className="w-full md:w-2/5 h-48 md:h-auto relative overflow-hidden bg-slate-950 shrink-0">
+                      <img
+                        src={ev.image || (ev.images && ev.images[0])}
+                        alt={ev.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute top-3 left-3">
+                        <span className="badge badge-accent text-[10px] rounded-full px-2.5 py-0.5 bg-accent-gold text-slate-950 font-semibold border-none">
+                          {ev.category}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Event Details */}
+                    <div className="p-6 flex flex-col justify-between flex-grow gap-4">
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-1.5 text-xs text-slate-400 font-semibold">
+                          <Calendar size={13} className="text-accent-gold shrink-0" />
+                          <span>{ev.date}</span>
+                        </div>
+                        <h3 className="text-base font-sans font-bold text-slate-900 dark:text-white leading-snug group-hover:text-accent-gold transition-colors line-clamp-2">
+                          {ev.title}
+                        </h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-3 leading-relaxed font-sans">
+                          {ev.description}
+                        </p>
+                      </div>
+
+                      {/* Metadata */}
+                      <div className="flex flex-col gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800 pt-3 mt-auto">
+                        {ev.time && (
+                          <div className="flex items-center gap-1.5">
+                            <Clock size={11} className="text-accent-gold shrink-0" />
+                            <span className="line-clamp-1 font-sans"><strong>Time:</strong> {ev.time}</span>
+                          </div>
+                        )}
+                        {ev.venue && (
+                          <div className="flex items-center gap-1.5">
+                            <MapPin size={11} className="text-accent-gold shrink-0" />
+                            <span className="line-clamp-1 font-sans"><strong>Venue:</strong> {ev.venue}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
 
             {/* Carousel Controls (Arrows and Dots) */}
             <div className="flex items-center justify-center gap-6" style={{ marginTop: '28px' }}>
@@ -479,42 +521,69 @@ const Home = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {latestBlogs.map((blog) => (
-                <Link
-                  key={blog.id}
-                  to={`/blog/${blog.id}`}
-                  className="bg-white dark:bg-slate-850 p-8 rounded-xl card-border shadow-sm hover:shadow-md hover:-translate-y-1 hover:border-accent-gold/40 dark:hover:border-accent-gold/40 transition-all duration-300 flex flex-col gap-6 relative overflow-hidden group animate-fade-up"
-                  style={{ gap: '24px' }}
-                >
-                  <div className="absolute top-0 left-0 w-[4px] h-full bg-accent-gold transition-colors" />
-                  <div className="flex items-center gap-2.5 text-xs text-slate-400 font-semibold">
-                    <span>{blog.date}</span>
-                    <span>•</span>
-                    <span>{blog.readTime}</span>
+            {loading && latestBlogs.length === 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in">
+                {[1, 2].map((n) => (
+                  <div key={n} className="bg-white dark:bg-slate-900 p-8 rounded-xl card-border shadow-sm flex flex-col gap-6 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-[4px] h-full bg-accent-gold" />
+                    <div className="flex items-center gap-2.5 text-xs text-slate-400 font-semibold">
+                      <div className="h-4 w-24 rounded shimmer" />
+                      <div className="h-4 w-20 rounded shimmer" />
+                    </div>
+                    <div className="h-6 w-3/4 rounded mt-2 shimmer" />
+                    {/* Shimmer tags matching screenshot position (directly under title) */}
+                    <div className="flex gap-2.5">
+                      <div className="h-5 w-16 rounded-full shimmer" />
+                      <div className="h-5 w-20 rounded-full shimmer" />
+                      <div className="h-5 w-12 rounded-full shimmer" />
+                    </div>
+                    {/* Shimmer summary lines */}
+                    <div className="space-y-2 flex-grow">
+                      <div className="h-3 w-full rounded shimmer" />
+                      <div className="h-3 w-5/6 rounded shimmer" />
+                    </div>
+                    <div className="h-4 w-28 rounded mt-2 shimmer" />
                   </div>
-                  <h3 className="text-xl font-sans font-bold text-slate-900 dark:text-white leading-snug group-hover:text-accent-gold transition-colors">
-                    {blog.title}
-                  </h3>
-                  <div className="flex flex-wrap gap-2.5">
-                    {blog.tags.slice(0, 3).map((tag, i) => (
-                      <span key={i} className="text-[10px] font-semibold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 rounded-full">
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-3 flex-grow leading-relaxed">
-                    {blog.summary}
-                  </p>
-                  <span
-                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent-color dark:text-accent-gold group-hover:underline mt-2 self-start"
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {latestBlogs.map((blog) => (
+                  <Link
+                    key={blog.id}
+                    to={`/blog/${blog.id}`}
+                    className="bg-white dark:bg-slate-850 p-8 rounded-xl card-border shadow-sm hover:shadow-md hover:-translate-y-1 hover:border-accent-gold/40 dark:hover:border-accent-gold/40 transition-all duration-300 flex flex-col gap-6 relative overflow-hidden group animate-fade-up"
+                    style={{ gap: '24px' }}
                   >
-                    Read Full Post
-                    <ArrowRight size={15} />
-                  </span>
-                </Link>
-              ))}
-            </div>
+                    <div className="absolute top-0 left-0 w-[4px] h-full bg-accent-gold transition-colors" />
+                    <div className="flex items-center gap-2.5 text-xs text-slate-400 font-semibold">
+                      <span>{blog.date}</span>
+                      <span>•</span>
+                      <span>{blog.readTime}</span>
+                    </div>
+                    <h3 className="text-xl font-sans font-bold text-slate-900 dark:text-white leading-snug group-hover:text-accent-gold transition-colors">
+                      {blog.title}
+                    </h3>
+                    <div className="flex flex-wrap gap-2.5">
+                      {blog.tags.slice(0, 3).map((tag, i) => (
+                        <span key={i} className="text-[10px] font-semibold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 rounded-full">
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-3 flex-grow leading-relaxed">
+                      {blog.summary}
+                    </p>
+                    <span
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent-color dark:text-accent-gold group-hover:underline mt-2 self-start"
+                    >
+                      Read Full Post
+                      <ArrowRight size={15} />
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>

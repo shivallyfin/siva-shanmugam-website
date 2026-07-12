@@ -201,20 +201,20 @@ const CorporateConnections = () => {
 
   // Skeleton loading component
   const EventSkeleton = () => (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-fade-in">
       {[1, 2, 3].map((n) => (
-        <div key={n} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm animate-pulse flex flex-col h-full overflow-hidden">
-          <div className="w-full bg-slate-200 dark:bg-slate-800" style={{ height: '360px' }} />
+        <div key={n} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm flex flex-col h-full overflow-hidden">
+          <div className="w-full shimmer" style={{ height: '360px' }} />
           <div className="p-6 flex flex-col gap-4 flex-grow bg-white dark:bg-slate-900">
             <div className="flex justify-between items-center">
-              <div className="h-5 w-14 bg-slate-200 dark:bg-slate-800 rounded" />
-              <div className="h-4 w-20 bg-slate-200 dark:bg-slate-800 rounded" />
+              <div className="h-5 w-14 rounded shimmer" />
+              <div className="h-4 w-20 rounded shimmer" />
             </div>
-            <div className="h-6 w-5/6 bg-slate-200 dark:bg-slate-800 rounded" />
-            <div className="h-4 w-full bg-slate-200 dark:bg-slate-800 rounded" />
+            <div className="h-6 w-5/6 rounded shimmer" />
+            <div className="h-4 w-full rounded shimmer" />
             <div className="border-t border-slate-100 dark:border-slate-800 pt-4 mt-auto space-y-2">
-              <div className="h-3 w-1/2 bg-slate-200 dark:bg-slate-800 rounded" />
-              <div className="h-3 w-2/3 bg-slate-200 dark:bg-slate-800 rounded" />
+              <div className="h-3 w-1/2 rounded shimmer" />
+              <div className="h-3 w-2/3 rounded shimmer" />
             </div>
           </div>
         </div>
