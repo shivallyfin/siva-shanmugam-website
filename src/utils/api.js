@@ -1,6 +1,6 @@
 import { profileData } from '../data/profile';
 
-const STRAPI_URL = process.env.REACT_APP_STRAPI_URL || 'http://localhost:1337';
+const STRAPI_URL = process.env.REACT_APP_STRAPI_URL || 'https://siva-shanmugam-cms.onrender.com';
 
 // Helper to format Strapi image URLs
 export const getStrapiMedia = (media) => {
