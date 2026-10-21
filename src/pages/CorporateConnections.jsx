@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, MapPin, Clock, Award, Users, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, MapPin, Clock, Award, Users, ChevronLeft, ChevronRight, Building } from 'lucide-react';
 import { fetchEvents } from '../utils/api';
+import { profileData } from '../data/profile';
 
 // Sub-component for individual event card to manage its own image slide state
 const EventCard = ({ ev }) => {
@@ -238,16 +239,62 @@ const CorporateConnections = () => {
 
   return (
     <div className="pt-[110px] pb-24 min-h-screen bg-slate-50 dark:bg-slate-950">
-      <div className="container flex flex-col gap-10 animate-fade-up">
+      <div className="container flex flex-col gap-12 animate-fade-up">
         {/* Header */}
         <div className="flex flex-col gap-4">
           <span className="text-xs font-mono font-bold uppercase tracking-wider text-accent-gold">
-            Campus Life & Activities
+            Industry Engagements & Institutional Collaborations
           </span>
           <h1 className="text-4xl font-serif font-bold text-slate-900 dark:text-white">
             Corporate Connections
           </h1>
           <div className="h-[3px] w-24 bg-accent-gold rounded-full" />
+          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-2xl">
+            Strategic collaborations established with leading corporations and institutions, bridging academia with industry practice through labs, certifications, MDPs, and placement training.
+          </p>
+        </div>
+
+        {/* Corporate & Institutional Alliances Grid */}
+        <div className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm flex flex-col gap-6">
+          <div className="flex items-center gap-2.5">
+            <Building className="text-accent-gold" size={24} />
+            <h2 className="text-xl font-serif font-bold text-slate-900 dark:text-white">
+              Strategic Corporate & Institutional Alliances
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            {profileData.industryAssociations.map((assoc, idx) => (
+              <div
+                key={idx}
+                className="p-5 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200/60 dark:border-slate-800/60 flex flex-col justify-between gap-3 hover:border-accent-gold/40 transition-colors"
+              >
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-base font-bold font-sans text-slate-900 dark:text-white">
+                      {assoc.organization}
+                    </span>
+                  </div>
+                  <span className="text-xs font-mono font-bold text-accent-gold bg-amber-50 dark:bg-amber-950/20 px-2.5 py-0.5 rounded self-start">
+                    {assoc.role}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-sans">
+                  {assoc.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Campus Activities Subheader */}
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-white">
+              Campus Masterclasses, Forums & Events
+            </h2>
+          </div>
+          <div className="h-[2px] w-16 bg-accent-gold rounded-full" />
         </div>
 
         {/* Categories Bar */}

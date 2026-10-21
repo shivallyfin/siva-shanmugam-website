@@ -1,11 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FileText, ArrowRight, ArrowUpRight, GraduationCap, ChevronLeft, ChevronRight, Clock, MapPin, Calendar } from 'lucide-react';
+import { FileText, ArrowRight, ArrowUpRight, GraduationCap, ChevronLeft, ChevronRight, Clock, MapPin, Calendar, BookOpen } from 'lucide-react';
 import { profileData } from '../data/profile';
 import { fetchBlogs, fetchEvents } from '../utils/api';
 
 const Home = () => {
-  const { personalInfo, aboutMe, publications } = profileData;
+  const { personalInfo, aboutMe, publications, coreCompetencies } = profileData;
   const [blogPosts, setBlogPosts] = useState([]);
   const [events, setEvents] = useState([]);
   const scrollContainerRef = useRef(null);
@@ -189,17 +189,37 @@ const Home = () => {
         <div className="container grid grid-cols-1 md:grid-cols-2 items-center gap-12">
           {/* Text Content */}
           <div className="flex flex-col gap-6 animate-fade-up">
-            <div className="inline-flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="badge badge-accent">{personalInfo.institution}</span>
+              <span className="text-xs font-mono font-medium text-slate-500 dark:text-slate-400">
+                {personalInfo.title}
+              </span>
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold tracking-tight text-slate-900 dark:text-white leading-[1.1]">
               Advancing <span className="text-gradient">Financial Research</span> & Education
             </h1>
 
-            <p className="text-lg text-slate-650 dark:text-slate-300 max-w-xl font-sans font-light leading-relaxed">
-              Hi, I'm <strong className="font-semibold text-slate-950 dark:text-white">{personalInfo.name}</strong>. {aboutMe.bio[0].replace(personalInfo.name + ' is', 'I am').replace('His work focus', 'My work focus')}
+            <p className="text-base md:text-lg text-slate-650 dark:text-slate-300 max-w-xl font-sans font-light leading-relaxed">
+              {aboutMe.bio[0]}
             </p>
+
+            {/* Core Leadership Competencies */}
+            <div className="flex flex-col gap-2.5 pt-1">
+              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-accent-gold">
+                Core Leadership Competencies
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {(coreCompetencies || profileData.coreCompetencies).map((comp, idx) => (
+                  <span
+                    key={idx}
+                    className="text-xs font-medium px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-650 dark:text-slate-300 border border-slate-200/60 dark:border-slate-800/60 transition-colors"
+                  >
+                    {comp}
+                  </span>
+                ))}
+              </div>
+            </div>
 
             <div className="flex flex-wrap gap-4 mt-2">
               <Link to="/publications" className="btn btn-primary">
@@ -232,20 +252,64 @@ const Home = () => {
                 />
               </div>
 
-              {/* Floated Stats Badge */}
+              {/* Floated Stats Badge - Academic Leadership */}
               <div
-                className="absolute bottom-4 right-4 bg-white dark:bg-slate-800 p-4 rounded-xl shadow-lg flex items-center gap-3"
-                style={{ border: '1.5px solid var(--accent-gold)' }}
+                className="absolute bg-white dark:bg-slate-800 py-2 px-3.5 rounded-xl shadow-lg flex items-center gap-2.5 z-10"
+                style={{
+                  border: '1.5px solid var(--accent-gold)',
+                  bottom: '14px',
+                  right: '-16px',
+                }}
               >
-                <div className="p-2.5 bg-amber-50 dark:bg-amber-950/30 rounded-lg">
-                  <GraduationCap className="text-accent-gold" size={24} />
+                <div className="p-2 bg-amber-50 dark:bg-amber-950/30 rounded-lg shrink-0 flex items-center justify-center">
+                  <GraduationCap className="text-accent-gold" size={18} />
                 </div>
                 <div>
-                  <div className="text-xs text-slate-400 font-medium">Research Scope</div>
-                  <div className="text-sm font-bold text-slate-800 dark:text-white">{publications.length} Publications</div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap">Academic Leadership</div>
+                  <div className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white whitespace-nowrap">25+ Years Experience</div>
+                </div>
+              </div>
+
+              {/* Floated Stats Badge - Scholarly Works */}
+              <div
+                className="absolute bg-white dark:bg-slate-800 py-2.5 px-4 rounded-xl shadow-lg flex items-center gap-3 z-10"
+                style={{
+                  border: '1.5px solid var(--accent-gold)',
+                  top: '-14px',
+                  left: '-44px',
+                }}
+              >
+                <div className="p-2 bg-amber-50 dark:bg-amber-950/30 rounded-lg shrink-0 flex items-center justify-center">
+                  <BookOpen className="text-accent-gold" size={20} />
+                </div>
+                <div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap">Scholarly Works</div>
+                  <div className="text-sm font-bold text-slate-900 dark:text-white whitespace-nowrap">{publications.length} Publications</div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Leadership & Academic Impact Stats Banner */}
+      <section className="border-y border-slate-200/60 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-900/30 py-8">
+        <div className="container grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 text-center">
+          <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 shadow-sm flex flex-col items-center gap-1">
+            <span className="text-2xl md:text-3xl font-serif font-bold text-accent-color dark:text-accent-gold">25+ Years</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Higher Education Leadership</span>
+          </div>
+          <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 shadow-sm flex flex-col items-center gap-1">
+            <span className="text-2xl md:text-3xl font-serif font-bold text-accent-color dark:text-accent-gold">{publications.length} Works</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Publications & Authored Books</span>
+          </div>
+          <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 shadow-sm flex flex-col items-center gap-1">
+            <span className="text-2xl md:text-3xl font-serif font-bold text-accent-color dark:text-accent-gold">100+ Projects</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">PG & Doctoral Guidance</span>
+          </div>
+          <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 shadow-sm flex flex-col items-center gap-1">
+            <span className="text-2xl md:text-3xl font-serif font-bold text-accent-color dark:text-accent-gold">8+ Alliances</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">IBM, EY, NISM, NSE & IIMs</span>
           </div>
         </div>
       </section>

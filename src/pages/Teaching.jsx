@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { BookOpen, Users, ChevronDown, ChevronUp, GraduationCap, Clock } from 'lucide-react';
+import { BookOpen, Users, ChevronDown, ChevronUp, Clock, Award } from 'lucide-react';
 import { profileData } from '../data/profile';
 
 const Teaching = () => {
-  const { teaching } = profileData;
+  const { teaching, scholarlyGuidance } = profileData;
   const [expandedCourse, setExpandedCourse] = useState({});
 
   const toggleCourse = (code) => {
@@ -16,7 +16,7 @@ const Teaching = () => {
         {/* Header */}
         <div className="flex flex-col gap-4">
           <span className="text-xs font-mono font-bold uppercase tracking-wider text-accent-gold">
-            Courses & Advising
+            Pedagogy & Mentorship
           </span>
           <h1 className="text-4xl font-serif font-bold text-slate-900 dark:text-white">
             Teaching & Mentorship
@@ -30,10 +30,13 @@ const Teaching = () => {
             <div className="flex items-center gap-3">
               <BookOpen className="text-accent-gold" size={28} />
               <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-white">
-                Courses Taught
+                Industry-Integrated Courses Taught
               </h2>
             </div>
             <div className="h-[2px] w-20 bg-accent-gold rounded-full" />
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Innovative curricula designed with outcome-based education, laboratory-integrated financial modeling, and corporate partnerships with EY, NISM, and NSE.
+            </p>
           </div>
 
           <div className="flex flex-col gap-6">
@@ -73,12 +76,12 @@ const Teaching = () => {
 
                 {expandedCourse[course.code] && (
                   <div className="px-6 pb-6 pt-6 border-t border-slate-100 dark:border-slate-850 text-sm animate-fade-up">
-                    <p className="text-slate-600 dark:text-slate-400 mb-5 leading-relaxed font-sans">
+                    <p className="text-slate-600 dark:text-slate-300 mb-5 leading-relaxed font-sans">
                       {course.description}
                     </p>
                     
                     <h4 className="font-sans font-bold text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-3">
-                      Syllabus Modules
+                      Syllabus Modules & Key Competencies
                     </h4>
                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 list-none pl-0">
                       {course.outline.map((topic, index) => (
@@ -95,81 +98,69 @@ const Teaching = () => {
           </div>
         </div>
 
-        {/* Section 2: Advising list */}
+        {/* Section 2: Research & Scholarly Advising */}
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-3">
               <Users className="text-accent-gold" size={28} />
               <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-white">
-                Student Advising & Mentorship
+                Research Guidance & Mentorship
               </h2>
             </div>
             <div className="h-[2px] w-20 bg-accent-gold rounded-full" />
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Supervising doctoral scholars, master's dissertations, and postgraduate research projects in corporate finance and management.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Active Students */}
-            <div className="flex flex-col gap-5">
-              <h3 className="text-lg font-serif font-semibold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-2">
-                Active Research Scholars
-              </h3>
-              
-              <div className="flex flex-col gap-4">
-                {teaching.students.active.map((student, index) => (
-                  <div 
-                    key={index}
-                    className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md hover:border-accent-gold/30 dark:hover:border-accent-gold/30 transition-all duration-300 flex gap-3.5"
-                  >
-                    <div className="p-2.5 bg-amber-50 dark:bg-amber-950/20 rounded-lg self-start shrink-0">
-                      <GraduationCap className="text-accent-gold" size={20} />
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <h4 className="font-sans font-bold text-slate-900 dark:text-white">
-                        {student.name}
-                      </h4>
-                      <div className="text-xs font-semibold text-accent-color dark:text-accent-gold">
-                        {student.degree} Candidate • {student.timeline}
-                      </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-sans italic leading-snug">
-                        "{student.topic}"
-                      </p>
-                    </div>
-                  </div>
-                ))}
+          <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm flex flex-col gap-8">
+            {/* Stats row */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              <div className="p-4 bg-slate-50 dark:bg-slate-850 rounded-xl border border-slate-200/60 dark:border-slate-800/60 flex flex-col items-center justify-center text-center">
+                <div className="text-3xl font-bold font-serif text-accent-color dark:text-accent-gold text-center">
+                  {scholarlyGuidance.phdGuidance}
+                </div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium text-center">Ph.D. Guidance</div>
+              </div>
+              <div className="p-4 bg-slate-50 dark:bg-slate-850 rounded-xl border border-slate-200/60 dark:border-slate-800/60 flex flex-col items-center justify-center text-center">
+                <div className="text-3xl font-bold font-serif text-accent-color dark:text-accent-gold text-center">
+                  {scholarlyGuidance.mphilGuidance}
+                </div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium text-center">M.Phil. Guidance</div>
+              </div>
+              <div className="p-4 bg-slate-50 dark:bg-slate-850 rounded-xl border border-slate-200/60 dark:border-slate-800/60 flex flex-col items-center justify-center text-center">
+                <div className="text-3xl font-bold font-serif text-accent-color dark:text-accent-gold text-center">
+                  {scholarlyGuidance.pgProjects}
+                </div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium text-center">PG Projects Guided</div>
+              </div>
+              <div className="p-4 bg-slate-50 dark:bg-slate-850 rounded-xl border border-slate-200/60 dark:border-slate-800/60 flex flex-col items-center justify-center text-center">
+                <div className="text-3xl font-bold font-serif text-accent-color dark:text-accent-gold text-center">
+                  {scholarlyGuidance.hIndex}
+                </div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium text-center">H-Index Citations</div>
               </div>
             </div>
 
-            {/* Completed Students */}
-            <div className="flex flex-col gap-5">
-              <h3 className="text-lg font-serif font-semibold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-2">
-                Graduated Alumni
-              </h3>
-              
-              <div className="flex flex-col gap-4">
-                {teaching.students.completed.map((student, index) => (
-                  <div 
-                    key={index}
-                    className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm hover:shadow-md hover:border-accent-gold/30 dark:hover:border-accent-gold/30 transition-all duration-300 flex gap-3.5"
+            {/* Doctoral Evaluation Board Section */}
+            <div className="flex flex-col gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <Award className="text-accent-gold" size={20} />
+                <h3 className="text-base font-sans font-bold text-slate-900 dark:text-white">
+                  Doctoral Evaluation Board Member
+                </h3>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Serving as doctoral thesis external examiner, evaluation committee member, and viva voce board member across premier Indian and international institutions:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-2">
+                {scholarlyGuidance.doctoralBoards.map((univ, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-2.5 p-3 rounded-lg bg-slate-50 dark:bg-slate-850 border border-slate-200/60 dark:border-slate-800/60 text-xs text-slate-650 dark:text-slate-300 font-medium"
                   >
-                    <div className="p-2.5 bg-amber-50 dark:bg-amber-950/20 rounded-lg self-start shrink-0">
-                      <GraduationCap className="text-accent-gold" size={20} />
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <h4 className="font-sans font-bold text-slate-900 dark:text-white">
-                        {student.name}
-                      </h4>
-                      <div className="text-xs font-semibold text-accent-color dark:text-accent-gold">
-                        {student.degree} Supervised • {student.timeline.split(' (')[0]}
-                      </div>
-                      {student.timeline.includes('Current Placement:') && (
-                        <div className="text-[11px] font-sans font-medium text-slate-500 dark:text-slate-400 mt-0.5">
-                          {student.timeline.split('Current Placement: ')[1]?.replace(')', '')}
-                        </div>
-                      )}
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-sans italic leading-snug">
-                        "{student.topic}"
-                      </p>
-                    </div>
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent-gold shrink-0" />
+                    <span>{univ}</span>
                   </div>
                 ))}
               </div>

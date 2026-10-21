@@ -49,7 +49,7 @@ const Contact = () => {
           email: formData.email,
           subject: formData.subject,
           message: formData.message,
-          from_name: 'Siva Shanmugam Website Contact Form'
+          from_name: 'Dr. C. Sivashanmugam Website Contact Form'
         })
       });
 
@@ -100,7 +100,7 @@ const Contact = () => {
                   <MapPin className="text-accent-gold" size={18} />
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <div className="font-bold text-slate-850 dark:text-slate-200">Office Address</div>
+                  <div className="font-bold text-slate-900 dark:text-white">Office Address</div>
                   <div className="text-slate-500 dark:text-slate-400 leading-relaxed">{personalInfo.office}</div>
                 </div>
               </div>
@@ -111,10 +111,15 @@ const Contact = () => {
                   <Mail className="text-accent-gold" size={18} />
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <div className="font-bold text-slate-850 dark:text-slate-200">Email Address</div>
+                  <div className="font-bold text-slate-900 dark:text-white">Email Addresses</div>
                   <a href={`mailto:${personalInfo.email}`} className="text-accent-color dark:text-accent-gold hover:underline mt-0.5 block">
                     {personalInfo.email}
                   </a>
+                  {personalInfo.secondaryEmail && (
+                    <a href={`mailto:${personalInfo.secondaryEmail}`} className="text-accent-color dark:text-accent-gold hover:underline mt-0.5 block">
+                      {personalInfo.secondaryEmail}
+                    </a>
+                  )}
                 </div>
               </div>
 
@@ -124,8 +129,10 @@ const Contact = () => {
                   <Phone className="text-accent-gold" size={18} />
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <div className="font-bold text-slate-850 dark:text-slate-200">Office Phone</div>
-                  <div className="text-slate-500 dark:text-slate-400 mt-0.5">{personalInfo.phone}</div>
+                  <div className="font-bold text-slate-900 dark:text-white">Direct Phone</div>
+                  <a href={`tel:${personalInfo.phone.replace(/\s+/g, '')}`} className="text-slate-500 dark:text-slate-400 hover:text-accent-gold mt-0.5">
+                    {personalInfo.phone}
+                  </a>
                 </div>
               </div>
 
@@ -135,7 +142,7 @@ const Contact = () => {
                   <Clock className="text-accent-gold" size={18} />
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <div className="font-bold text-slate-850 dark:text-slate-200">Office Hours</div>
+                  <div className="font-bold text-slate-900 dark:text-white">Office Hours</div>
                   <div className="text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">Tuesday & Thursday: 2:00 PM – 4:00 PM</div>
                 </div>
               </div>

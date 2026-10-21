@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Search, FileText, ExternalLink, Quote, Clipboard, Check, ChevronDown, ChevronUp } from 'lucide-react';
+import { Search, FileText, ExternalLink, Quote, Clipboard, Check, ChevronDown, ChevronUp, GraduationCap } from 'lucide-react';
 import { profileData } from '../data/profile';
 
 const Publications = () => {
-  const { publications } = profileData;
+  const { publications, scholarlyGuidance } = profileData;
 
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('All');
@@ -11,7 +11,7 @@ const Publications = () => {
   const [expandedBibtex, setExpandedBibtex] = useState({});
   const [copiedId, setCopiedId] = useState(null);
 
-  const tabs = ['All', 'Journal', 'Conference'];
+  const tabs = ['All', 'Journal', 'Books & Chapters'];
 
   // Toggle abstract
   const toggleAbstract = (id) => {
@@ -36,41 +36,103 @@ const Publications = () => {
     const matchesSearch =
       pub.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       pub.authors.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      pub.journal.toLowerCase().includes(searchTerm.toLowerCase());
+      pub.journal.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (pub.indexing && pub.indexing.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    const matchesTab = activeTab === 'All' || pub.category === activeTab;
+    let matchesTab = true;
+    if (activeTab === 'Journal') {
+      matchesTab = pub.category === 'Journal';
+    } else if (activeTab === 'Books & Chapters') {
+      matchesTab = pub.category === 'Book' || pub.category === 'Book Chapter';
+    }
 
     return matchesSearch && matchesTab;
   });
 
   return (
     <div className="pt-[110px] pb-24 min-h-screen bg-slate-50 dark:bg-slate-950">
-      <div className="container max-w-4xl flex flex-col gap-12 animate-fade-up">
+      <div className="container max-w-4xl flex flex-col gap-10 animate-fade-up">
         {/* Header */}
         <div className="flex flex-col gap-4">
           <span className="text-xs font-mono font-bold uppercase tracking-wider text-accent-gold">
-            Academic Contributions
+            Academic Research & Scholarly Works
           </span>
           <h1 className="text-4xl font-serif font-bold text-slate-900 dark:text-white">
-            Research Publications
+            Research Publications & Books
           </h1>
           <div className="h-[3px] w-24 bg-accent-gold rounded-full" />
         </div>
 
+        {/* Scholarly Guidance & Impact Banner */}
+        {scholarlyGuidance && (
+          <div className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm flex flex-col gap-6">
+            <div className="flex items-center gap-2.5">
+              <GraduationCap className="text-accent-gold" size={24} />
+              <h2 className="text-xl font-serif font-bold text-slate-900 dark:text-white">
+                Research & Scholarly Guidance
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+              <div className="p-3 bg-slate-50 dark:bg-slate-850 rounded-xl">
+                <div className="text-2xl font-bold font-serif text-accent-color dark:text-accent-gold">
+                  {scholarlyGuidance.phdGuidance}
+                </div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Ph.D. Scholars Guided</div>
+              </div>
+              <div className="p-3 bg-slate-50 dark:bg-slate-850 rounded-xl">
+                <div className="text-2xl font-bold font-serif text-accent-color dark:text-accent-gold">
+                  {scholarlyGuidance.mphilGuidance}
+                </div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">M.Phil. Scholars Guided</div>
+              </div>
+              <div className="p-3 bg-slate-50 dark:bg-slate-850 rounded-xl">
+                <div className="text-2xl font-bold font-serif text-accent-color dark:text-accent-gold">
+                  {scholarlyGuidance.pgProjects}
+                </div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">PG Projects Guided</div>
+              </div>
+              <div className="p-3 bg-slate-50 dark:bg-slate-850 rounded-xl">
+                <div className="text-2xl font-bold font-serif text-accent-color dark:text-accent-gold">
+                  {scholarlyGuidance.hIndex}
+                </div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">H-Index Citations</div>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-2.5">
+              <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                Doctoral Evaluation Board Member:
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {scholarlyGuidance.doctoralBoards.map((univ, idx) => (
+                  <span
+                    key={idx}
+                    className="text-xs px-2.5 py-1 rounded-md bg-slate-50 dark:bg-slate-800 text-slate-650 dark:text-slate-300 border border-slate-200/60 dark:border-slate-800/60"
+                  >
+                    {univ}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Filters & Search Bar */}
         <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm">
           {/* Tab switches */}
-          <div className="flex gap-1.5 w-full md:w-auto">
+          <div className="flex flex-wrap gap-1.5 w-full md:w-auto">
             {tabs.map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${activeTab === tab
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
+                  activeTab === tab
                     ? 'bg-accent-color text-white dark:bg-accent-gold dark:text-slate-950 font-semibold'
                     : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-                  }`}
+                }`}
               >
-                {tab === 'All' ? 'All' : `${tab}s`}
+                {tab}
               </button>
             ))}
           </div>
@@ -82,7 +144,7 @@ const Publications = () => {
             </span>
             <input
               type="text"
-              placeholder="Search title, co-author, journal..."
+              placeholder="Search title, journal, indexing..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-slate-200 dark:border-slate-800 rounded-lg text-sm bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-accent-gold"
@@ -102,8 +164,15 @@ const Publications = () => {
                 <div className="absolute top-0 left-0 w-[4px] h-full bg-slate-100 dark:bg-slate-800 group-hover:bg-accent-gold transition-colors" />
 
                 <div className="flex flex-col gap-3">
-                  <div className="flex items-center justify-between">
-                    <span className="badge badge-accent">{pub.category}</span>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="badge badge-accent">{pub.category}</span>
+                      {pub.indexing && (
+                        <span className="text-xs font-mono font-bold text-accent-gold bg-amber-50 dark:bg-amber-950/20 px-2.5 py-0.5 rounded">
+                          {pub.indexing}
+                        </span>
+                      )}
+                    </div>
                     <span className="text-xs font-mono font-medium text-slate-400">{pub.year}</span>
                   </div>
 
@@ -115,21 +184,23 @@ const Publications = () => {
                     <span className="font-semibold">{pub.authors}</span>
                   </div>
 
-                  <div className="text-xs italic text-slate-400">
+                  <div className="text-xs italic text-slate-500 dark:text-slate-400">
                     {pub.journal} {pub.volume && `, Vol. ${pub.volume}`} {pub.issue && `, No. ${pub.issue}`} {pub.pages && `, pp. ${pub.pages}`}
                   </div>
 
                   {/* Links Row */}
                   <div className="flex flex-wrap gap-4 mt-2 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs font-semibold">
-                    <a
-                      href={`https://doi.org/${pub.doi}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-accent-color dark:text-accent-gold hover:underline"
-                    >
-                      <ExternalLink size={14} />
-                      DOI Reference
-                    </a>
+                    {pub.doi && (
+                      <a
+                        href={`https://doi.org/${pub.doi}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-accent-color dark:text-accent-gold hover:underline"
+                      >
+                        <ExternalLink size={14} />
+                        DOI Reference
+                      </a>
+                    )}
 
                     <button
                       onClick={() => toggleAbstract(pub.id)}
@@ -137,11 +208,11 @@ const Publications = () => {
                     >
                       {expandedAbstract[pub.id] ? (
                         <>
-                          <ChevronUp size={14} /> Hide Abstract
+                          <ChevronUp size={14} /> Hide Summary
                         </>
                       ) : (
                         <>
-                          <ChevronDown size={14} /> View Abstract
+                          <ChevronDown size={14} /> View Summary
                         </>
                       )}
                     </button>
@@ -157,8 +228,10 @@ const Publications = () => {
 
                   {/* Collapsible Abstract */}
                   {expandedAbstract[pub.id] && (
-                    <div className="mt-4 p-4 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-900 text-sm text-slate-500 dark:text-slate-400 font-sans leading-relaxed animate-fade-up">
-                      <h4 className="font-bold text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Abstract</h4>
+                    <div className="mt-4 p-4 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-900 text-sm text-slate-600 dark:text-slate-300 font-sans leading-relaxed animate-fade-up">
+                      <h4 className="font-bold text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                        Overview / Abstract
+                      </h4>
                       {pub.abstract}
                     </div>
                   )}

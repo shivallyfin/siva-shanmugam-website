@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, MapPin, GraduationCap, Award } from 'lucide-react';
+import { Mail, MapPin, GraduationCap, Award, Phone } from 'lucide-react';
 import { profileData } from '../data/profile';
 
 const Footer = () => {
@@ -14,10 +14,10 @@ const Footer = () => {
           {/* Brand/About Col */}
           <div className="flex flex-col gap-4">
             <h3 className="font-serif text-lg font-bold text-white tracking-tight">
-              Dr. Siva Shanmugam C
+              {personalInfo.name}
             </h3>
             <p className="text-sm text-slate-400 max-w-sm">
-              Professor of Corporate Finance and Management Studies. Researching empirical finance, working capital optimization, and financial analytics.
+              Professor | Dean | Academic Leader | Researcher. Over 25 years of leadership in higher education, curriculum innovation, and corporate finance.
             </p>
             <div className="flex items-center gap-3 mt-2">
               <a
@@ -106,7 +106,13 @@ const Footer = () => {
             <ul className="flex flex-col gap-3 text-sm list-none">
               <li className="flex items-start gap-2.5">
                 <MapPin size={16} className="text-accent-gold shrink-0 mt-0.5" />
-                <span>{personalInfo.office}</span>
+                <span className="leading-snug">{personalInfo.office}</span>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <Phone size={16} className="text-accent-gold shrink-0" />
+                <a href={`tel:${personalInfo.phone.replace(/\s+/g, '')}`} className="hover:text-accent-gold transition-colors">
+                  {personalInfo.phone}
+                </a>
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail size={16} className="text-accent-gold shrink-0" />
@@ -114,6 +120,14 @@ const Footer = () => {
                   {personalInfo.email}
                 </a>
               </li>
+              {personalInfo.secondaryEmail && (
+                <li className="flex items-center gap-2.5">
+                  <Mail size={16} className="text-accent-gold shrink-0" />
+                  <a href={`mailto:${personalInfo.secondaryEmail}`} className="hover:text-accent-gold transition-colors">
+                    {personalInfo.secondaryEmail}
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         </div>

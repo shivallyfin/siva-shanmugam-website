@@ -64,11 +64,14 @@ const Navbar = () => {
           : 'bg-transparent py-5'
         }`}>
         <div className="container flex items-center justify-between">
-          <NavLink to="/" className="flex items-center gap-2 group" onClick={closeMenu}>
-            <div className="p-2 rounded-lg bg-accent-gold/10 text-accent-gold group-hover:bg-accent-gold/20 transition-all duration-300">
+          <NavLink to="/" className="inline-flex items-center gap-2.5 group" onClick={closeMenu}>
+            <span
+              className="text-accent-gold flex items-center justify-center shrink-0"
+              style={{ display: 'inline-flex', alignItems: 'center', marginTop: '2px' }}
+            >
               <BookOpen size={20} className="transform group-hover:rotate-3 transition-transform" />
-            </div>
-            <span className="font-serif text-lg font-bold tracking-tight text-slate-900 dark:text-white leading-tight">
+            </span>
+            <span className="font-serif text-lg font-bold tracking-tight text-slate-900 dark:text-white leading-none">
               {profileData.personalInfo.name}
             </span>
           </NavLink>
