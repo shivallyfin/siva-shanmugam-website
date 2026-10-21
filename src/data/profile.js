@@ -578,5 +578,109 @@ export const profileData = {
     }
   },
   blogPosts: [],
-  events: []
+  events: [
+    {
+      id: "p4pm9vk4so8jzd77bptf5rg1",
+      legacyId: "ev-1",
+      title: "Master Class: Career Opportunities in Capital Market",
+      category: "Seminar",
+      date: "June 25, 2026",
+      time: "11:00 AM - 1:00 PM",
+      venue: "B-Block Seminar Hall, Sapthagiri NPS University",
+      speaker: "Mr. Sanjeev B (NISM)",
+      image: "/assets/ev-1-1.jpg",
+      images: [
+        "/assets/ev-1-1.jpg",
+        "/assets/ev-1-2.jpg",
+        "/assets/ev-1-3.jpg",
+        "/assets/ev-1-4.jpg",
+        "/assets/ev-1-5.jpg"
+      ],
+      description: "The School of Management Studies at Sapthagiri NPS University hosted a Master Class Series seminar on 'Career Opportunities in Capital Market' in partnership with NISM (National Institute of Securities Markets), featuring speaker Mr. Sanjeev B."
+    },
+    {
+      id: "mzr6i8cby26n01yi1m9nhdsp",
+      legacyId: "ev-2",
+      title: "HR Club Presents: Chain Sprint",
+      category: "Activity",
+      date: "June 25, 2026",
+      time: "2:30 PM Onwards",
+      venue: "Seminar Hall, B Block, Sapthagiri NPS University",
+      coordinator: "Prof. K Deepika Rani",
+      image: "/assets/poster-2.jpg",
+      images: ["/assets/poster-2.jpg"],
+      description: "HR Club organized a dynamic team-building game event to enhance communication, teamwork, and leadership skills among management scholars."
+    },
+    {
+      id: "rs5agsjat4bbokqfo74aq9oq",
+      legacyId: "ev-3",
+      title: "Master Class: Career Planning in Marketing & Supply Chain",
+      category: "Seminar",
+      date: "June 24, 2026",
+      time: "10:00 AM - 11:00 PM",
+      venue: "C-Block Seminar Hall, Sapthagiri NPS University",
+      speaker: "Mr. Shinto Joseph (Director - Market Development, Tasking)",
+      image: "/assets/poster-3.jpg",
+      images: ["/assets/poster-3.jpg"],
+      description: "Advanced masterclass on supply chain operations and product relaunch dynamics, offering strategic advice for career planning in commerce."
+    },
+    {
+      id: "pdqhy2203tqu1huzjvvjmi7m",
+      legacyId: "ev-4",
+      title: "OPS-Innovate 2026: Production & Operations Model Expo",
+      category: "Expo",
+      date: "June 24, 2026",
+      time: "11:45 AM - 1:00 PM",
+      venue: "Room C 214, Sapthagiri NPS University",
+      image: "/assets/poster-4.jpg",
+      images: ["/assets/poster-4.jpg"],
+      description: "A model exposition showcasing advanced production systems, operational models, and innovative logistics designs created by the School of Management students."
+    },
+    {
+      id: "vt7u9kl6qlbnkswgsob66rgd",
+      legacyId: "ev-5",
+      title: "Once Upon a Decision: Business Analytics Quiz",
+      category: "Competition",
+      date: "June 22, 2026",
+      time: "2:30 PM Onwards",
+      venue: "B Block Seminar Hall, Sapthagiri NPS University",
+      image: "/assets/poster-5.jpg",
+      images: ["/assets/poster-5.jpg"],
+      description: "The Business Analytics Club hosted a competitive quiz challenge exploring data-driven decisions and predictive analytics insights."
+    },
+    {
+      id: "oxt0m2fa7e6es7027voh0ti0",
+      legacyId: "ev-6",
+      title: "Product Relaunch Competition & Academic Felicitation",
+      category: "Academic",
+      date: "June 19-20, 2026",
+      time: "10:00 AM - 4:00 PM",
+      venue: "B-Block Seminar Hall, Sapthagiri NPS University",
+      speaker: "Mr. Shinto Joseph (Director - Market Development, Tasking)",
+      image: "/assets/event-pic-1.jpg",
+      images: [
+        "/assets/event-pic-1.jpg",
+        "/assets/event-pic-2.jpg",
+        "/assets/event-pic-3.jpg"
+      ],
+      description: "The School of Management organized the Product Relaunch Competition 2026. Chief Guest Mr. Shinto Joseph and Dean Dr. Siva Shanmugam presented academic honors, certificates, and university felicitation tokens to participants."
+    },
+    {
+      id: "m6hst1ghumgwvjvrzn3k6x03",
+      legacyId: "ev-7",
+      title: "Build & Scale Next Digital Unicorn",
+      category: "Activity",
+      date: "April 23, 2026",
+      time: "09:30 AM - 01:00 PM",
+      venue: "Seminar Hall, 1st Floor, C Block, Sapthagiri NPS University",
+      speaker: "Ms. Ananya Mungara (Founder & CEO, SmartChakra Technologies / SonicScape)",
+      coordinator: "Dr. Shalini B & Ms. Rajashree B P",
+      image: "/assets/ev-unicorn-1.jpg",
+      images: [
+        "/assets/ev-unicorn-1.jpg",
+        "/assets/ev-unicorn-2.jpg"
+      ],
+      description: "School of Management's BBA Program presents an experiential startup ideation event. BBA students design and develop digital platform startups while applying CRM strategies for customer acquisition and sales management."
+    }
+  ]
 };

@@ -167,35 +167,34 @@ const EventCard = ({ ev }) => {
 };
 
 const CorporateConnections = () => {
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState(() => {
+    try {
+      const cached = localStorage.getItem('siva_events_full_cache');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return profileData.events || [];
+  });
   const [activeFilter, setActiveFilter] = useState('All');
   const [visibleCount, setVisibleCount] = useState(6);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Load from cache first for instant layout rendering
-    const cached = localStorage.getItem('siva_events_full_cache');
-    let hasCache = false;
-    if (cached) {
-      try { 
-        const parsed = JSON.parse(cached);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setEvents(parsed);
-          setLoading(false);
-          hasCache = true;
-        }
-      } catch (e) {}
-    }
-
-    if (!hasCache) {
-      setLoading(true);
-    }
-
+    // Non-blocking background sync with Strapi CMS
     const loadEvents = async () => {
-      const cmsEvents = await fetchEvents();
-      setEvents(cmsEvents);
-      setLoading(false);
-      localStorage.setItem('siva_events_full_cache', JSON.stringify(cmsEvents));
+      try {
+        const cmsEvents = await fetchEvents();
+        if (cmsEvents && cmsEvents.length > 0) {
+          setEvents(cmsEvents);
+          localStorage.setItem('siva_events_full_cache', JSON.stringify(cmsEvents));
+        }
+      } catch (err) {
+        console.log('CMS background sync skipped:', err);
+      } finally {
+        setLoading(false);
+      }
     };
     loadEvents();
   }, []);

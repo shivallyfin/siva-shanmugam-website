@@ -15,7 +15,24 @@ export const getStrapiMedia = (media) => {
   return url.startsWith('/') ? `${STRAPI_URL}${url}` : url;
 };
 
-// Fetch Blogs from Strapi (falls back to static data if CMS is down or empty)
+// Helper to fetch with timeout
+const fetchWithTimeout = async (url, options = {}, timeoutMs = 6000) => {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal
+    });
+    clearTimeout(id);
+    return response;
+  } catch (error) {
+    clearTimeout(id);
+    throw error;
+  }
+};
+
+// Fetch Blogs strictly from Strapi server
 export const fetchBlogs = async (limit) => {
   try {
     let url = `${STRAPI_URL}/api/blogs?populate=*&sort[0]=publishedAt:desc`;
@@ -26,7 +43,7 @@ export const fetchBlogs = async (limit) => {
     if (!res.ok) throw new Error('Failed to fetch from CMS');
     const { data } = await res.json();
     
-    if (!data || data.length === 0) return profileData.blogPosts;
+    if (!data || data.length === 0) return [];
 
     return data.map(item => {
       // Parse comma-separated tags
@@ -50,25 +67,28 @@ export const fetchBlogs = async (limit) => {
       };
     });
   } catch (error) {
-    console.log('Using static blogs fallback:', error.message);
-    return profileData.blogPosts;
+    console.log('Error fetching blogs from server:', error.message);
+    return [];
   }
 };
 
-// Fetch Events from Strapi (falls back to static data if CMS is down or empty)
+// Fetch Events from Strapi (merges with hardcoded data; falls back instantly on cold-start/error)
 export const fetchEvents = async (limit) => {
+  const staticEvents = profileData.events || [];
   try {
     let url = `${STRAPI_URL}/api/events?populate=*&sort[0]=publishedAt:desc`;
     if (limit) {
       url += `&pagination[pageSize]=${limit}`;
     }
-    const res = await fetch(url);
+    const res = await fetchWithTimeout(url, {}, 5000);
     if (!res.ok) throw new Error('Failed to fetch from CMS');
     const { data } = await res.json();
 
-    if (!data || data.length === 0) return profileData.events;
+    if (!data || data.length === 0) {
+      return limit ? staticEvents.slice(0, limit) : staticEvents;
+    }
 
-    return data.map(item => {
+    const cmsEvents = data.map(item => {
       // Get array of media URLs from the multiple media "image" field
       const mediaList = getStrapiMedia(item.image); 
       const coverImage = Array.isArray(mediaList) && mediaList.length > 0 ? mediaList[0] : null;
@@ -89,8 +109,21 @@ export const fetchEvents = async (limit) => {
         isStrapi: true
       };
     });
+
+    // Merge: Server events take priority; append any static events not present in CMS
+    const cmsIds = new Set(cmsEvents.map(e => e.id));
+    const cmsTitles = new Set(cmsEvents.map(e => (e.title || '').toLowerCase().trim()));
+    const merged = [...cmsEvents];
+
+    for (const se of staticEvents) {
+      if (!cmsIds.has(se.id) && !cmsTitles.has((se.title || '').toLowerCase().trim())) {
+        merged.push(se);
+      }
+    }
+
+    return limit ? merged.slice(0, limit) : merged;
   } catch (error) {
-    console.log('Using static events fallback:', error.message);
-    return profileData.events;
+    console.log('Using static events fallback (instant load):', error.message);
+    return limit ? staticEvents.slice(0, limit) : staticEvents;
   }
 };

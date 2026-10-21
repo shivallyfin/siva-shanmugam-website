@@ -8,36 +8,37 @@ const STRAPI_URL = process.env.REACT_APP_STRAPI_URL || 'http://localhost:1337';
 
 const BlogPost = () => {
   const { id } = useParams();
-  const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [post, setPost] = useState(() => {
+    try {
+      const cached = localStorage.getItem('siva_blogs_full_cache');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        const cachedFound = parsed.find((p) => p.id === id || p.legacyId === id || p.documentId === id);
+        if (cachedFound) return cachedFound;
+      }
+    } catch (e) {}
+
+    return null;
+  });
+  const [loading, setLoading] = useState(() => {
+    try {
+      const cached = localStorage.getItem('siva_blogs_full_cache');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        return !parsed.find((p) => p.id === id || p.legacyId === id || p.documentId === id);
+      }
+    } catch (e) {}
+    return true;
+  });
 
   useEffect(() => {
     const loadPost = async () => {
-      // Try to load from cache first
-      const cached = localStorage.getItem('siva_blogs_full_cache');
-      let foundInCache = false;
-      if (cached) {
-        try {
-          const cmsBlogs = JSON.parse(cached);
-          const found = cmsBlogs.find((p) => p.id === id);
-          if (found) {
-            setPost(found);
-            setLoading(false);
-            foundInCache = true;
-          }
-        } catch (e) {}
-      }
-
-      if (!foundInCache) {
-        setLoading(true);
-      }
-
       try {
         const cmsBlogs = await fetchBlogs();
-        const found = cmsBlogs.find((p) => p.id === id);
-        setPost(found || null);
-        
-        // Update cache
+        const found = cmsBlogs.find((p) => p.id === id || p.legacyId === id || p.documentId === id);
+        if (found) {
+          setPost(found);
+        }
         localStorage.setItem('siva_blogs_full_cache', JSON.stringify(cmsBlogs));
       } catch (error) {
         console.error('Failed to load blog post:', error);

@@ -4,30 +4,41 @@ import { Search, Calendar, Clock, ArrowRight, Tag } from 'lucide-react';
 import { fetchBlogs } from '../utils/api';
 
 const Blog = () => {
-  const [blogPosts, setBlogPosts] = useState([]);
+  const [blogPosts, setBlogPosts] = useState(() => {
+    try {
+      const cached = localStorage.getItem('siva_blogs_full_cache');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return [];
+  });
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTag, setSelectedTag] = useState(null);
   const [visibleCount, setVisibleCount] = useState(5);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => {
+    try {
+      const cached = localStorage.getItem('siva_blogs_full_cache');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) return false;
+      }
+    } catch (e) {}
+    return true;
+  });
 
   useEffect(() => {
-    // Load from cache first for instant layout rendering
-    const cached = localStorage.getItem('siva_blogs_full_cache');
-    if (cached) {
-      try {
-        const parsed = JSON.parse(cached);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setBlogPosts(parsed);
-          setLoading(false);
-        }
-      } catch (e) { }
-    }
-
     const loadBlogs = async () => {
-      const cmsBlogs = await fetchBlogs();
-      setBlogPosts(cmsBlogs);
-      setLoading(false);
-      localStorage.setItem('siva_blogs_full_cache', JSON.stringify(cmsBlogs));
+      try {
+        const cmsBlogs = await fetchBlogs();
+        setBlogPosts(cmsBlogs || []);
+        localStorage.setItem('siva_blogs_full_cache', JSON.stringify(cmsBlogs || []));
+      } catch (err) {
+        console.log('CMS blogs fetch error:', err);
+      } finally {
+        setLoading(false);
+      }
     };
     loadBlogs();
   }, []);

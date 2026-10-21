@@ -6,36 +6,33 @@ import { fetchEvents } from '../utils/api';
 
 const EventPost = () => {
   const { id } = useParams();
-  const [event, setEvent] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [event, setEvent] = useState(() => {
+    const staticFound = (profileData.events || []).find(
+      (e) => e.id === id || e.legacyId === id || e.documentId === id
+    );
+    if (staticFound) return staticFound;
+
+    try {
+      const cached = localStorage.getItem('siva_events_full_cache');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        const cachedFound = parsed.find((e) => e.id === id || e.legacyId === id || e.documentId === id);
+        if (cachedFound) return cachedFound;
+      }
+    } catch (e) {}
+
+    return null;
+  });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const loadEvent = async () => {
-      // Try to load from cache first
-      const cached = localStorage.getItem('siva_events_full_cache');
-      let foundInCache = false;
-      if (cached) {
-        try {
-          const cmsEvents = JSON.parse(cached);
-          const found = cmsEvents.find((e) => e.id === id);
-          if (found) {
-            setEvent(found);
-            setLoading(false);
-            foundInCache = true;
-          }
-        } catch (e) {}
-      }
-
-      if (!foundInCache) {
-        setLoading(true);
-      }
-
       try {
         const cmsEvents = await fetchEvents();
-        const found = cmsEvents.find((e) => e.id === id);
-        setEvent(found || null);
-        
-        // Update cache
+        const found = cmsEvents.find((e) => e.id === id || e.legacyId === id || e.documentId === id);
+        if (found) {
+          setEvent(found);
+        }
         localStorage.setItem('siva_events_full_cache', JSON.stringify(cmsEvents));
       } catch (error) {
         console.error('Failed to load event:', error);

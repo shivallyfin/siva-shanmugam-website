@@ -7,13 +7,24 @@ import { fetchBlogs, fetchEvents } from '../utils/api';
 const Home = () => {
   const { personalInfo, aboutMe, publications, coreCompetencies } = profileData;
   const [blogPosts, setBlogPosts] = useState([]);
-  const [events, setEvents] = useState([]);
+  const [blogsLoading, setBlogsLoading] = useState(true);
+
+  const [events, setEvents] = useState(() => {
+    try {
+      const cached = localStorage.getItem('siva_events_cache');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return (profileData.events || []).slice(0, 5);
+  });
+
   const scrollContainerRef = useRef(null);
   const eventsScrollContainerRef = useRef(null);
   const [activeDot, setActiveDot] = useState(0);
   const [activeEventsDot, setActiveEventsDot] = useState(0);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
@@ -24,48 +35,32 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    // Load from cache first for instant layout rendering
-    const cachedBlogs = localStorage.getItem('siva_blogs_cache');
-    const cachedEvents = localStorage.getItem('siva_events_cache');
-    let hasCache = false;
-    
-    if (cachedBlogs) {
-      try { 
-        const parsed = JSON.parse(cachedBlogs);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setBlogPosts(parsed);
-          hasCache = true;
-        }
-      } catch (e) {}
-    }
-    if (cachedEvents) {
-      try { 
-        const parsed = JSON.parse(cachedEvents);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setEvents(parsed);
-          hasCache = true;
-        }
-      } catch (e) {}
-    }
-
-    if (hasCache) {
-      setLoading(false);
-    } else {
-      setLoading(true);
-    }
-
-    const loadCMSData = async () => {
-      const cmsBlogs = await fetchBlogs(2);
-      setBlogPosts(cmsBlogs);
-      const cmsEvents = await fetchEvents(5);
-      setEvents(cmsEvents);
-      setLoading(false);
-      
-      // Update cache
-      localStorage.setItem('siva_blogs_cache', JSON.stringify(cmsBlogs));
-      localStorage.setItem('siva_events_cache', JSON.stringify(cmsEvents));
+    // 1. Fetch blogs strictly from Strapi server
+    const loadBlogs = async () => {
+      try {
+        const cmsBlogs = await fetchBlogs(2);
+        setBlogPosts(cmsBlogs || []);
+      } catch (err) {
+        console.log('Error loading blogs from server:', err);
+      } finally {
+        setBlogsLoading(false);
+      }
     };
-    loadCMSData();
+    loadBlogs();
+
+    // 2. Background sync events from Strapi CMS
+    const loadEvents = async () => {
+      try {
+        const cmsEvents = await fetchEvents(5);
+        if (cmsEvents && cmsEvents.length > 0) {
+          setEvents(cmsEvents);
+          localStorage.setItem('siva_events_cache', JSON.stringify(cmsEvents));
+        }
+      } catch (err) {
+        console.log('CMS events sync skipped:', err);
+      }
+    };
+    loadEvents();
   }, []);
 
   // Get latest blog posts (first 2)
@@ -335,7 +330,7 @@ const Home = () => {
 
           {/* Slider Container */}
           <div className="relative w-full animate-fade-up">
-            {loading && events.length === 0 ? (
+            {events.length === 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {[1, 2, 3].map((n) => (
                   <div key={n} className="bg-white dark:bg-slate-900 rounded-xl card-border overflow-hidden shadow-sm flex flex-col md:flex-row md:h-[250px] relative">
@@ -585,7 +580,7 @@ const Home = () => {
               </p>
             </div>
 
-            {loading && latestBlogs.length === 0 ? (
+            {blogsLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in">
                 {[1, 2].map((n) => (
                   <div key={n} className="bg-white dark:bg-slate-900 p-8 rounded-xl card-border shadow-sm flex flex-col gap-6 relative overflow-hidden">
@@ -610,7 +605,7 @@ const Home = () => {
                   </div>
                 ))}
               </div>
-            ) : (
+            ) : latestBlogs.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {latestBlogs.map((blog) => (
                   <Link
@@ -646,6 +641,10 @@ const Home = () => {
                     </span>
                   </Link>
                 ))}
+              </div>
+            ) : (
+              <div className="text-center py-10 text-sm text-slate-500 dark:text-slate-400">
+                No recent blog posts published on the server yet.
               </div>
             )}
           </div>
